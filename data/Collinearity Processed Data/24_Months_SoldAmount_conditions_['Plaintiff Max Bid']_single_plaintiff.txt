@@ -1,0 +1,29 @@
+                            OLS Regression Results                            
+==============================================================================
+Dep. Variable:            Sold Amount   R-squared:                       0.502
+Model:                            OLS   Adj. R-squared:                  0.497
+Method:                 Least Squares   F-statistic:                     98.41
+Date:                Wed, 16 Dec 2020   Prob (F-statistic):           7.95e-58
+Time:                        13:30:02   Log-Likelihood:                -5279.5
+No. Observations:                 394   AIC:                         1.057e+04
+Df Residuals:                     390   BIC:                         1.058e+04
+Df Model:                           4                                         
+Covariance Type:            nonrobust                                         
+=====================================================================================
+                        coef    std err          t      P>|t|      [0.025      0.975]
+-------------------------------------------------------------------------------------
+ZEstimate             0.1950      0.020      9.823      0.000       0.156       0.234
+Place in Line      -669.2391    269.711     -2.481      0.014   -1199.509    -138.969
+Court Year           36.0905      9.597      3.760      0.000      17.221      54.960
+Previous Auctions -5377.9250   4422.516     -1.216      0.225   -1.41e+04    3317.031
+==============================================================================
+Omnibus:                       64.918   Durbin-Watson:                   1.933
+Prob(Omnibus):                  0.000   Jarque-Bera (JB):              234.845
+Skew:                           0.686   Prob(JB):                     1.01e-51
+Kurtosis:                       6.524   Cond. No.                     3.53e+05
+==============================================================================
+
+Warnings:
+[1] Standard Errors assume that the covariance matrix of the errors is correctly specified.
+[2] The condition number is large, 3.53e+05. This might indicate that there are
+strong multicollinearity or other numerical problems.

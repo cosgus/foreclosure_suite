@@ -1,0 +1,30 @@
+                            OLS Regression Results                            
+==============================================================================
+Dep. Variable:      Plaintiff Max Bid   R-squared:                       0.905
+Model:                            OLS   Adj. R-squared:                  0.904
+Method:                 Least Squares   F-statistic:                     897.8
+Date:                Wed, 16 Dec 2020   Prob (F-statistic):          8.24e-192
+Time:                        13:30:09   Log-Likelihood:                -4687.6
+No. Observations:                 383   AIC:                             9383.
+Df Residuals:                     379   BIC:                             9399.
+Df Model:                           4                                         
+Covariance Type:            nonrobust                                         
+===================================================================================
+                      coef    std err          t      P>|t|      [0.025      0.975]
+-----------------------------------------------------------------------------------
+Final Judgment      0.4410      0.019     23.792      0.000       0.405       0.477
+Assessed Value      0.4293      0.032     13.486      0.000       0.367       0.492
+Defendant Count   149.1578    153.906      0.969      0.333    -153.459     451.774
+Defendant Count   149.1578    153.906      0.969      0.333    -153.459     451.774
+Living Area       -33.4469      5.151     -6.493      0.000     -43.575     -23.318
+==============================================================================
+Omnibus:                       71.625   Durbin-Watson:                   1.896
+Prob(Omnibus):                  0.000   Jarque-Bera (JB):             1066.099
+Skew:                          -0.146   Prob(JB):                    3.16e-232
+Kurtosis:                      11.168   Cond. No.                     8.58e+19
+==============================================================================
+
+Warnings:
+[1] Standard Errors assume that the covariance matrix of the errors is correctly specified.
+[2] The smallest eigenvalue is 4.6e-27. This might indicate that there are
+strong multicollinearity problems or that the design matrix is singular.

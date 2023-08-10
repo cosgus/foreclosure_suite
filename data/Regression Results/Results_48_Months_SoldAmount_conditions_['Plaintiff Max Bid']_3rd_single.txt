@@ -1,0 +1,37 @@
+                            OLS Regression Results                            
+==============================================================================
+Dep. Variable:            Sold Amount   R-squared:                       0.983
+Model:                            OLS   Adj. R-squared:                  0.983
+Method:                 Least Squares   F-statistic:                     4137.
+Date:                Thu, 11 Feb 2021   Prob (F-statistic):               0.00
+Time:                        16:22:08   Log-Likelihood:                -10498.
+No. Observations:                 876   AIC:                         2.102e+04
+Df Residuals:                     864   BIC:                         2.108e+04
+Df Model:                          12                                         
+Covariance Type:            nonrobust                                         
+======================================================================================
+                         coef    std err          t      P>|t|      [0.025      0.975]
+--------------------------------------------------------------------------------------
+Auction ID             0.0711      0.024      2.957      0.003       0.024       0.118
+Final Judgment         0.0413      0.014      2.968      0.003       0.014       0.069
+Assessed Value         0.1411      0.016      9.083      0.000       0.111       0.172
+Plaintiff Max Bid      0.8340      0.019     43.607      0.000       0.796       0.872
+Beds                2594.4880   1419.840      1.827      0.068    -192.251    5381.227
+Lot Size               0.2467      0.157      1.573      0.116      -0.061       0.554
+ZEstimate             -0.0364      0.011     -3.403      0.001      -0.057      -0.015
+Court Year           -22.6217     14.392     -1.572      0.116     -50.869       5.626
+Association Binary -4849.0786   2771.293     -1.750      0.081   -1.03e+04     590.175
+Defendant Count      850.0613    297.778      2.855      0.004     265.609    1434.514
+Previous Auctions   1200.9270    690.527      1.739      0.082    -154.380    2556.234
+JoverZ             -2.166e+04   3538.662     -6.122      0.000   -2.86e+04   -1.47e+04
+==============================================================================
+Omnibus:                      356.248   Durbin-Watson:                   1.974
+Prob(Omnibus):                  0.000   Jarque-Bera (JB):             2048.689
+Skew:                           1.764   Prob(JB):                         0.00
+Kurtosis:                       9.609   Cond. No.                     3.51e+06
+==============================================================================
+
+Warnings:
+[1] Standard Errors assume that the covariance matrix of the errors is correctly specified.
+[2] The condition number is large, 3.51e+06. This might indicate that there are
+strong multicollinearity or other numerical problems.

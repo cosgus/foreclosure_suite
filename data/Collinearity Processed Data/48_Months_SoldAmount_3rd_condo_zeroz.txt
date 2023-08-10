@@ -1,0 +1,25 @@
+                            OLS Regression Results                            
+==============================================================================
+Dep. Variable:            Sold Amount   R-squared:                       0.875
+Model:                            OLS   Adj. R-squared:                  0.875
+Method:                 Least Squares   F-statistic:                     3489.
+Date:                Wed, 16 Dec 2020   Prob (F-statistic):               0.00
+Time:                        13:30:14   Log-Likelihood:                -12460.
+No. Observations:                 995   AIC:                         2.492e+04
+Df Residuals:                     993   BIC:                         2.493e+04
+Df Model:                           2                                         
+Covariance Type:            nonrobust                                         
+==================================================================================
+                     coef    std err          t      P>|t|      [0.025      0.975]
+----------------------------------------------------------------------------------
+Final Judgment     0.3991      0.013     31.317      0.000       0.374       0.424
+Assessed Value     0.4104      0.014     29.472      0.000       0.383       0.438
+==============================================================================
+Omnibus:                      498.995   Durbin-Watson:                   2.008
+Prob(Omnibus):                  0.000   Jarque-Bera (JB):           117157.650
+Skew:                          -1.105   Prob(JB):                         0.00
+Kurtosis:                      56.113   Cond. No.                         2.57
+==============================================================================
+
+Warnings:
+[1] Standard Errors assume that the covariance matrix of the errors is correctly specified.

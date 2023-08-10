@@ -1,0 +1,28 @@
+                            OLS Regression Results                            
+==============================================================================
+Dep. Variable:            Sold Amount   R-squared:                       0.973
+Model:                            OLS   Adj. R-squared:                  0.973
+Method:                 Least Squares   F-statistic:                     1853.
+Date:                Wed, 16 Dec 2020   Prob (F-statistic):          5.38e-120
+Time:                        13:31:37   Log-Likelihood:                -1842.1
+No. Observations:                 156   AIC:                             3690.
+Df Residuals:                     153   BIC:                             3699.
+Df Model:                           3                                         
+Covariance Type:            nonrobust                                         
+=====================================================================================
+                        coef    std err          t      P>|t|      [0.025      0.975]
+-------------------------------------------------------------------------------------
+Plaintiff Max Bid     0.5551      0.033     16.846      0.000       0.490       0.620
+ZEstimate             0.3323      0.021     15.997      0.000       0.291       0.373
+Defendant Count     871.7197    519.023      1.680      0.095    -153.657    1897.097
+==============================================================================
+Omnibus:                       71.494   Durbin-Watson:                   1.953
+Prob(Omnibus):                  0.000   Jarque-Bera (JB):             1096.969
+Skew:                           1.164   Prob(JB):                    6.26e-239
+Kurtosis:                      15.781   Cond. No.                     6.66e+04
+==============================================================================
+
+Warnings:
+[1] Standard Errors assume that the covariance matrix of the errors is correctly specified.
+[2] The condition number is large, 6.66e+04. This might indicate that there are
+strong multicollinearity or other numerical problems.

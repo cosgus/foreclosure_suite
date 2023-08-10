@@ -1,0 +1,32 @@
+                            OLS Regression Results                            
+==============================================================================
+Dep. Variable:      Plaintiff Max Bid   R-squared:                       0.948
+Model:                            OLS   Adj. R-squared:                  0.947
+Method:                 Least Squares   F-statistic:                     2117.
+Date:                Wed, 16 Dec 2020   Prob (F-statistic):               0.00
+Time:                        13:31:12   Log-Likelihood:                -10717.
+No. Observations:                 821   AIC:                         2.145e+04
+Df Residuals:                     814   BIC:                         2.148e+04
+Df Model:                           7                                         
+Covariance Type:            nonrobust                                         
+===================================================================================
+                      coef    std err          t      P>|t|      [0.025      0.975]
+-----------------------------------------------------------------------------------
+Final Judgment      0.5963      0.019     31.058      0.000       0.559       0.634
+ZEstimate           0.3091      0.019     16.361      0.000       0.272       0.346
+Docket Count      563.0628    102.464      5.495      0.000     361.938     764.188
+Day Count        -457.3405    156.724     -2.918      0.004    -764.970    -149.711
+Place in Line     993.1500    228.014      4.356      0.000     545.585    1440.715
+Court Year        -44.1128      6.233     -7.077      0.000     -56.348     -31.878
+Defendant Count  -972.4094    961.570     -1.011      0.312   -2859.859     915.040
+==============================================================================
+Omnibus:                      547.357   Durbin-Watson:                   1.934
+Prob(Omnibus):                  0.000   Jarque-Bera (JB):            39018.570
+Skew:                          -2.253   Prob(JB):                         0.00
+Kurtosis:                      36.471   Cond. No.                     1.83e+05
+==============================================================================
+
+Warnings:
+[1] Standard Errors assume that the covariance matrix of the errors is correctly specified.
+[2] The condition number is large, 1.83e+05. This might indicate that there are
+strong multicollinearity or other numerical problems.

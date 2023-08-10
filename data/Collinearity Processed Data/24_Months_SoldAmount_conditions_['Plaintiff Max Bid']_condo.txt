@@ -1,0 +1,29 @@
+                            OLS Regression Results                            
+==============================================================================
+Dep. Variable:            Sold Amount   R-squared:                       0.466
+Model:                            OLS   Adj. R-squared:                  0.461
+Method:                 Least Squares   F-statistic:                     95.80
+Date:                Wed, 16 Dec 2020   Prob (F-statistic):           1.58e-58
+Time:                        13:30:01   Log-Likelihood:                -5800.4
+No. Observations:                 443   AIC:                         1.161e+04
+Df Residuals:                     439   BIC:                         1.163e+04
+Df Model:                           4                                         
+Covariance Type:            nonrobust                                         
+==================================================================================
+                     coef    std err          t      P>|t|      [0.025      0.975]
+----------------------------------------------------------------------------------
+Final Judgment     0.0257      0.024      1.093      0.275      -0.021       0.072
+Beds            9646.6493   7167.873      1.346      0.179   -4440.962    2.37e+04
+ZEstimate          0.0765      0.025      3.018      0.003       0.027       0.126
+Court Year        25.9029      6.925      3.740      0.000      12.292      39.514
+==============================================================================
+Omnibus:                      256.824   Durbin-Watson:                   1.893
+Prob(Omnibus):                  0.000   Jarque-Bera (JB):             5046.792
+Skew:                           2.064   Prob(JB):                         0.00
+Kurtosis:                      19.012   Cond. No.                     8.83e+05
+==============================================================================
+
+Warnings:
+[1] Standard Errors assume that the covariance matrix of the errors is correctly specified.
+[2] The condition number is large, 8.83e+05. This might indicate that there are
+strong multicollinearity or other numerical problems.

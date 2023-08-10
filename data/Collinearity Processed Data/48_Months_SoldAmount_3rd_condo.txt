@@ -1,0 +1,32 @@
+                            OLS Regression Results                            
+==============================================================================
+Dep. Variable:            Sold Amount   R-squared:                       0.894
+Model:                            OLS   Adj. R-squared:                  0.893
+Method:                 Least Squares   F-statistic:                     1188.
+Date:                Wed, 16 Dec 2020   Prob (F-statistic):               0.00
+Time:                        13:31:15   Log-Likelihood:                -12380.
+No. Observations:                 995   AIC:                         2.477e+04
+Df Residuals:                     988   BIC:                         2.481e+04
+Df Model:                           7                                         
+Covariance Type:            nonrobust                                         
+=====================================================================================
+                        coef    std err          t      P>|t|      [0.025      0.975]
+-------------------------------------------------------------------------------------
+Final Judgment        0.3556      0.014     25.993      0.000       0.329       0.382
+ZEstimate             0.3290      0.011     31.069      0.000       0.308       0.350
+Docket Count        194.1304     60.955      3.185      0.001      74.513     313.747
+Day Count          -208.5144     93.337     -2.234      0.026    -391.676     -25.353
+Place in Line       250.6098    124.736      2.009      0.045       5.832     495.388
+Court Year           -5.9637      3.583     -1.664      0.096     -12.995       1.067
+Previous Auctions -2938.0132   2033.009     -1.445      0.149   -6927.525    1051.498
+==============================================================================
+Omnibus:                      431.484   Durbin-Watson:                   1.981
+Prob(Omnibus):                  0.000   Jarque-Bera (JB):           100428.765
+Skew:                          -0.767   Prob(JB):                         0.00
+Kurtosis:                      52.194   Cond. No.                     3.90e+05
+==============================================================================
+
+Warnings:
+[1] Standard Errors assume that the covariance matrix of the errors is correctly specified.
+[2] The condition number is large, 3.9e+05. This might indicate that there are
+strong multicollinearity or other numerical problems.

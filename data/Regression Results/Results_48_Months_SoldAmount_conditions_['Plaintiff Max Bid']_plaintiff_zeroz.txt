@@ -1,0 +1,28 @@
+                            OLS Regression Results                            
+==============================================================================
+Dep. Variable:            Sold Amount   R-squared:                       0.622
+Model:                            OLS   Adj. R-squared:                  0.607
+Method:                 Least Squares   F-statistic:                     41.13
+Date:                Sun, 24 Jan 2021   Prob (F-statistic):           7.98e-16
+Time:                        13:25:39   Log-Likelihood:                -1053.3
+No. Observations:                  78   AIC:                             2113.
+Df Residuals:                      75   BIC:                             2120.
+Df Model:                           3                                         
+Covariance Type:            nonrobust                                         
+==================================================================================
+                     coef    std err          t      P>|t|      [0.025      0.975]
+----------------------------------------------------------------------------------
+Assessed Value     0.1658      0.049      3.382      0.001       0.068       0.263
+Day Count       -344.3780    443.968     -0.776      0.440   -1228.807     540.051
+Bath            5.675e+04   1.28e+04      4.417      0.000    3.12e+04    8.24e+04
+==============================================================================
+Omnibus:                        1.930   Durbin-Watson:                   2.033
+Prob(Omnibus):                  0.381   Jarque-Bera (JB):                1.938
+Skew:                           0.352   Prob(JB):                        0.379
+Kurtosis:                       2.683   Cond. No.                     3.78e+05
+==============================================================================
+
+Warnings:
+[1] Standard Errors assume that the covariance matrix of the errors is correctly specified.
+[2] The condition number is large, 3.78e+05. This might indicate that there are
+strong multicollinearity or other numerical problems.

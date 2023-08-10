@@ -1,0 +1,30 @@
+                            OLS Regression Results                            
+==============================================================================
+Dep. Variable:      Plaintiff Max Bid   R-squared:                       0.919
+Model:                            OLS   Adj. R-squared:                  0.918
+Method:                 Least Squares   F-statistic:                     1932.
+Date:                Wed, 16 Dec 2020   Prob (F-statistic):               0.00
+Time:                        13:31:11   Log-Likelihood:                -10835.
+No. Observations:                 858   AIC:                         2.168e+04
+Df Residuals:                     853   BIC:                         2.170e+04
+Df Model:                           5                                         
+Covariance Type:            nonrobust                                         
+======================================================================================
+                         coef    std err          t      P>|t|      [0.025      0.975]
+--------------------------------------------------------------------------------------
+Final Judgment         0.4233      0.012     35.064      0.000       0.400       0.447
+Lot Size               0.3996      0.502      0.795      0.427      -0.587       1.386
+ZEstimate              0.1784      0.010     17.370      0.000       0.158       0.199
+Association Binary -1.762e+04   4487.542     -3.926      0.000   -2.64e+04   -8809.624
+Previous Auctions   5453.1957   1447.288      3.768      0.000    2612.533    8293.858
+==============================================================================
+Omnibus:                      342.492   Durbin-Watson:                   1.953
+Prob(Omnibus):                  0.000   Jarque-Bera (JB):            29869.968
+Skew:                          -0.860   Prob(JB):                         0.00
+Kurtosis:                      31.854   Cond. No.                     1.07e+06
+==============================================================================
+
+Warnings:
+[1] Standard Errors assume that the covariance matrix of the errors is correctly specified.
+[2] The condition number is large, 1.07e+06. This might indicate that there are
+strong multicollinearity or other numerical problems.

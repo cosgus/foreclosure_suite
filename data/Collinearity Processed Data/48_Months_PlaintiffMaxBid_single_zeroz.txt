@@ -1,0 +1,37 @@
+                            OLS Regression Results                            
+==============================================================================
+Dep. Variable:      Plaintiff Max Bid   R-squared:                       0.919
+Model:                            OLS   Adj. R-squared:                  0.919
+Method:                 Least Squares   F-statistic:                     3680.
+Date:                Wed, 16 Dec 2020   Prob (F-statistic):               0.00
+Time:                        13:31:14   Log-Likelihood:                -52192.
+No. Observations:                3905   AIC:                         1.044e+05
+Df Residuals:                    3893   BIC:                         1.045e+05
+Df Model:                          12                                         
+Covariance Type:            nonrobust                                         
+======================================================================================
+                         coef    std err          t      P>|t|      [0.025      0.975]
+--------------------------------------------------------------------------------------
+Final Judgment         0.5734      0.011     51.680      0.000       0.552       0.595
+Assessed Value         0.4507      0.014     31.660      0.000       0.423       0.479
+Beds               -7921.2206   2139.835     -3.702      0.000   -1.21e+04   -3725.917
+Living Area            8.5360      1.902      4.487      0.000       4.806      12.266
+Lot Size              -0.3331      0.170     -1.957      0.050      -0.667       0.001
+Docket Count         -62.3406     57.345     -1.087      0.277    -174.770      50.088
+Day Count            164.4999    103.728      1.586      0.113     -38.867     367.866
+Place in Line       -282.3213    144.941     -1.948      0.052    -566.488       1.845
+Court Year           -11.6166      5.202     -2.233      0.026     -21.816      -1.417
+Association Binary  -1.21e+04   5083.043     -2.381      0.017   -2.21e+04   -2134.830
+Defendant Count    -1821.0993    574.608     -3.169      0.002   -2947.661    -694.537
+Previous Auctions   6897.4622   1227.451      5.619      0.000    4490.953    9303.971
+==============================================================================
+Omnibus:                     1550.355   Durbin-Watson:                   2.004
+Prob(Omnibus):                  0.000   Jarque-Bera (JB):          1574059.258
+Skew:                           0.097   Prob(JB):                         0.00
+Kurtosis:                     101.357   Cond. No.                     1.52e+06
+==============================================================================
+
+Warnings:
+[1] Standard Errors assume that the covariance matrix of the errors is correctly specified.
+[2] The condition number is large, 1.52e+06. This might indicate that there are
+strong multicollinearity or other numerical problems.

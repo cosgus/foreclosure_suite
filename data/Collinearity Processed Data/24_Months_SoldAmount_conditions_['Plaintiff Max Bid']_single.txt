@@ -1,0 +1,29 @@
+                            OLS Regression Results                            
+==============================================================================
+Dep. Variable:            Sold Amount   R-squared:                       0.608
+Model:                            OLS   Adj. R-squared:                  0.606
+Method:                 Least Squares   F-statistic:                     262.5
+Date:                Wed, 16 Dec 2020   Prob (F-statistic):          4.42e-136
+Time:                        13:31:05   Log-Likelihood:                -9092.3
+No. Observations:                 681   AIC:                         1.819e+04
+Df Residuals:                     677   BIC:                         1.821e+04
+Df Model:                           4                                         
+Covariance Type:            nonrobust                                         
+===================================================================================
+                      coef    std err          t      P>|t|      [0.025      0.975]
+-----------------------------------------------------------------------------------
+ZEstimate           0.1476      0.016      9.390      0.000       0.117       0.178
+Docket Count      237.0923    104.370      2.272      0.023      32.164     442.021
+Court Year         47.3955      6.814      6.956      0.000      34.016      60.775
+Defendant Count -1899.6872   1348.177     -1.409      0.159   -4546.798     747.424
+==============================================================================
+Omnibus:                       75.885   Durbin-Watson:                   1.970
+Prob(Omnibus):                  0.000   Jarque-Bera (JB):              317.589
+Skew:                           0.418   Prob(JB):                     1.09e-69
+Kurtosis:                       6.239   Cond. No.                     1.35e+05
+==============================================================================
+
+Warnings:
+[1] Standard Errors assume that the covariance matrix of the errors is correctly specified.
+[2] The condition number is large, 1.35e+05. This might indicate that there are
+strong multicollinearity or other numerical problems.

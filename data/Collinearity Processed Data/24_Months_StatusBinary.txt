@@ -1,0 +1,31 @@
+                            OLS Regression Results                            
+==============================================================================
+Dep. Variable:          Status Binary   R-squared:                       0.432
+Model:                            OLS   Adj. R-squared:                  0.431
+Method:                 Least Squares   F-statistic:                     1008.
+Date:                Wed, 23 Dec 2020   Prob (F-statistic):               0.00
+Time:                        15:17:05   Log-Likelihood:                -5127.9
+No. Observations:                7968   AIC:                         1.027e+04
+Df Residuals:                    7962   BIC:                         1.031e+04
+Df Model:                           6                                         
+Covariance Type:            nonrobust                                         
+======================================================================================
+                         coef    std err          t      P>|t|      [0.025      0.975]
+--------------------------------------------------------------------------------------
+Lot Size           -1.205e-06   3.83e-07     -3.146      0.002   -1.96e-06   -4.54e-07
+ZEstimate          -2.799e-08   1.27e-08     -2.198      0.028    -5.3e-08   -3.03e-09
+Place in Line          0.0003      0.000      1.980      0.048    3.47e-06       0.001
+Court Year             0.0003   6.99e-06     36.840      0.000       0.000       0.000
+Association Binary     0.0566      0.011      5.267      0.000       0.036       0.078
+Previous Auctions     -0.0605      0.002    -25.342      0.000      -0.065      -0.056
+==============================================================================
+Omnibus:                    50706.880   Durbin-Watson:                   1.740
+Prob(Omnibus):                  0.000   Jarque-Bera (JB):              986.673
+Skew:                           0.435   Prob(JB):                    5.58e-215
+Kurtosis:                       1.511   Cond. No.                     1.21e+06
+==============================================================================
+
+Warnings:
+[1] Standard Errors assume that the covariance matrix of the errors is correctly specified.
+[2] The condition number is large, 1.21e+06. This might indicate that there are
+strong multicollinearity or other numerical problems.

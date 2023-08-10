@@ -1,0 +1,28 @@
+                            OLS Regression Results                            
+==============================================================================
+Dep. Variable:            Sold Amount   R-squared:                       0.769
+Model:                            OLS   Adj. R-squared:                  0.723
+Method:                 Least Squares   F-statistic:                     16.65
+Date:                Thu, 11 Feb 2021   Prob (F-statistic):           4.88e-05
+Time:                        16:22:13   Log-Likelihood:                -237.02
+No. Observations:                  18   AIC:                             480.0
+Df Residuals:                      15   BIC:                             482.7
+Df Model:                           3                                         
+Covariance Type:            nonrobust                                         
+==============================================================================
+                 coef    std err          t      P>|t|      [0.025      0.975]
+------------------------------------------------------------------------------
+Auction ID    -1.1000      0.530     -2.077      0.055      -2.229       0.029
+Lot Size       1.7934      1.128      1.590      0.133      -0.611       4.197
+Court Year   726.8537    304.434      2.388      0.031      77.967    1375.740
+==============================================================================
+Omnibus:                        0.205   Durbin-Watson:                   1.688
+Prob(Omnibus):                  0.902   Jarque-Bera (JB):                0.387
+Skew:                          -0.168   Prob(JB):                        0.824
+Kurtosis:                       2.365   Cond. No.                     1.08e+04
+==============================================================================
+
+Warnings:
+[1] Standard Errors assume that the covariance matrix of the errors is correctly specified.
+[2] The condition number is large, 1.08e+04. This might indicate that there are
+strong multicollinearity or other numerical problems.

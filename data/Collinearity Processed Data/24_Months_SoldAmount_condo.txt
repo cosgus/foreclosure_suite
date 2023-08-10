@@ -1,0 +1,32 @@
+                            OLS Regression Results                            
+==============================================================================
+Dep. Variable:            Sold Amount   R-squared:                       0.631
+Model:                            OLS   Adj. R-squared:                  0.629
+Method:                 Least Squares   F-statistic:                     300.3
+Date:                Wed, 16 Dec 2020   Prob (F-statistic):          6.17e-224
+Time:                        13:30:02   Log-Likelihood:                -13749.
+No. Observations:                1058   AIC:                         2.751e+04
+Df Residuals:                    1052   BIC:                         2.754e+04
+Df Model:                           6                                         
+Covariance Type:            nonrobust                                         
+=====================================================================================
+                        coef    std err          t      P>|t|      [0.025      0.975]
+-------------------------------------------------------------------------------------
+Auction ID            0.0361      0.009      4.240      0.000       0.019       0.053
+Final Judgment        0.0607      0.015      3.920      0.000       0.030       0.091
+Beds               1.174e+04   4094.068      2.867      0.004    3704.556    1.98e+04
+Previous Auctions -1967.2630   1518.871     -1.295      0.196   -4947.624    1013.098
+Previous Auctions -1967.2630   1518.871     -1.295      0.196   -4947.624    1013.098
+ZEstimate             0.1190      0.015      7.943      0.000       0.090       0.148
+Docket Count        179.9217     81.695      2.202      0.028      19.617     340.226
+==============================================================================
+Omnibus:                      405.259   Durbin-Watson:                   2.029
+Prob(Omnibus):                  0.000   Jarque-Bera (JB):            13759.492
+Skew:                           1.092   Prob(JB):                         0.00
+Kurtosis:                      20.532   Cond. No.                     1.81e+22
+==============================================================================
+
+Warnings:
+[1] Standard Errors assume that the covariance matrix of the errors is correctly specified.
+[2] The smallest eigenvalue is 5.4e-30. This might indicate that there are
+strong multicollinearity problems or that the design matrix is singular.

@@ -1,0 +1,27 @@
+                            OLS Regression Results                            
+==============================================================================
+Dep. Variable:          Status Binary   R-squared:                       0.427
+Model:                            OLS   Adj. R-squared:                  0.426
+Method:                 Least Squares   F-statistic:                     736.9
+Date:                Wed, 23 Dec 2020   Prob (F-statistic):          6.50e-240
+Time:                        15:17:06   Log-Likelihood:                -1642.1
+No. Observations:                1981   AIC:                             3288.
+Df Residuals:                    1979   BIC:                             3299.
+Df Model:                           2                                         
+Covariance Type:            nonrobust                                         
+==============================================================================
+                 coef    std err          t      P>|t|      [0.025      0.975]
+------------------------------------------------------------------------------
+ZEstimate   2.611e-07   3.27e-08      7.990      0.000    1.97e-07    3.25e-07
+Day Count      0.0054      0.000     27.750      0.000       0.005       0.006
+==============================================================================
+Omnibus:                     2043.580   Durbin-Watson:                   1.417
+Prob(Omnibus):                  0.000   Jarque-Bera (JB):              135.278
+Skew:                          -0.183   Prob(JB):                     4.21e-30
+Kurtosis:                       1.773   Cond. No.                     7.03e+03
+==============================================================================
+
+Warnings:
+[1] Standard Errors assume that the covariance matrix of the errors is correctly specified.
+[2] The condition number is large, 7.03e+03. This might indicate that there are
+strong multicollinearity or other numerical problems.

@@ -1,0 +1,37 @@
+web_scraper/
+├── __init__.py
+├── scraper/
+│   ├── __init__.py
+│   ├── scraper_1/
+│   │   ├── __init__.py
+│   │   ├── url_manager.py
+│   │   ├── payload_manager.py
+│   │   └── scraper.py
+│   ├── scraper_2/
+│   │   ├── __init__.py
+│   │   ├── url_manager.py
+│   │   ├── payload_manager.py
+│   │   └── scraper.py
+│   └── scraper_3/
+│       ├── __init__.py
+│       ├── url_manager.py
+│       ├── payload_manager.py
+│       └── scraper.py
+
+├── database/
+│   ├── __init__.py
+│   └── database_handler.py
+├── data_processing/
+│   ├── __init__.py
+│   └── data_processor.py
+├── modeling/
+│   ├── __init__.py
+│   └── model_builder.py
+├── utils/ (Optional)
+│   ├── __init__.py
+│   └── common_utils.py
+├── cli/
+│   ├── __init__.py
+│   ├── commands.py
+│   └── main.py
+└── execute_scrapers.py

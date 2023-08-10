@@ -1,0 +1,35 @@
+                            OLS Regression Results                            
+==============================================================================
+Dep. Variable:            Sold Amount   R-squared:                       0.587
+Model:                            OLS   Adj. R-squared:                  0.585
+Method:                 Least Squares   F-statistic:                     320.5
+Date:                Thu, 11 Feb 2021   Prob (F-statistic):               0.00
+Time:                        16:22:11   Log-Likelihood:                -30094.
+No. Observations:                2264   AIC:                         6.021e+04
+Df Residuals:                    2254   BIC:                         6.026e+04
+Df Model:                          10                                         
+Covariance Type:            nonrobust                                         
+=====================================================================================
+                        coef    std err          t      P>|t|      [0.025      0.975]
+-------------------------------------------------------------------------------------
+Auction ID           -0.1602      0.054     -2.986      0.003      -0.265      -0.055
+Final Judgment        0.2568      0.020     12.638      0.000       0.217       0.297
+Assessed Value        0.2866      0.026     10.847      0.000       0.235       0.338
+Beds               1.486e+04   4465.926      3.328      0.001    6106.376    2.36e+04
+Living Area         -53.4790     10.965     -4.877      0.000     -74.982     -31.976
+ZEstimate            -0.1350      0.017     -7.730      0.000      -0.169      -0.101
+Court Year          139.3249     31.584      4.411      0.000      77.387     201.263
+Defendant Count    1934.5591    677.842      2.854      0.004     605.300    3263.819
+Previous Auctions  4076.3314   2441.136      1.670      0.095    -710.777    8863.440
+JoverZ            -4.734e+04   6444.734     -7.346      0.000      -6e+04   -3.47e+04
+==============================================================================
+Omnibus:                     2704.564   Durbin-Watson:                   1.955
+Prob(Omnibus):                  0.000   Jarque-Bera (JB):          2025581.755
+Skew:                           5.482   Prob(JB):                         0.00
+Kurtosis:                     149.125   Cond. No.                     2.75e+06
+==============================================================================
+
+Warnings:
+[1] Standard Errors assume that the covariance matrix of the errors is correctly specified.
+[2] The condition number is large, 2.75e+06. This might indicate that there are
+strong multicollinearity or other numerical problems.
