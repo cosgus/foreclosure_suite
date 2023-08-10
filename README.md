@@ -20,47 +20,6 @@ Foreclosure suite uses modeling to filter out auctions that are not likely worth
 
 The user can generate a list of properties that are likely to actually go to auction and sell to a 3rd party for a desirable price. We will also be able to determine if there is a home owners association seeking damages.
 
-## Structure
-The following structure is tentative and will be updated often
-
-```bash
-web_scraper/
-├── __init__.py
-├── scraper/
-│   ├── __init__.py
-│   ├── urls/
-│   │   ├── __init__.py
-│   │   ├── foreclosure_urls.py
-│   │   ├── appraiser_urls.py
-│   │   └── court_urls.py
-│   ├── payloads/
-│   │   ├── __init__.py
-│   │   ├── foreclosure_payloads.py
-│   │   ├── appraiser_payloads.py
-│   │   └── court_payloads.py
-│   ├── foreclosure.py
-│   ├── appraiser.py
-│   ├── court.py   
-│   ├── master.py 
-│   └── utils.py 
-├── database/
-│   ├── __init__.py
-│   └── database_handler.py
-├── data_processing/
-│   ├── __init__.py
-│   └── data_processor.py
-├── modeling/
-│   ├── __init__.py
-│   └── model_builder.py
-├── utils
-│   ├── __init__.py
-│   └── common_utils.py
-├── cli/
-│   ├── __init__.py
-│   ├── commands.py
-│   └── main.py
-└── main.py
-```
 
 ## Setup
 The user must have login credentials for <a href="http://realforeclose.miamidade.gov">Miami-Dade foreclosure</a> as well as <a href="https://www2.miamidadeclerk.gov/PremierServices/login.aspx">Miami-Dade Clerks Office</a>. These credentials are saved in a .env
@@ -76,6 +35,10 @@ There are three sources of data and accordingly 3 scrapers. There is a submodule
 <details>
 <summary>Foreclosure</summary>
 <br>
+This is the scraper module responsible for pulling data from the
+<a href='https://www.miamidade.realforeclose.com/'>Miami-Dade foreclosure</a> website. We get access to information about auctions, and some partial data regarding court records and property information from 3 different endpoints
+
+<br>
 Foreclosure scraping begins by getting a list of auction id's for a given date.
 
 ```python
@@ -88,7 +51,7 @@ Foreclosure scraping begins by getting a list of auction id's for a given date.
 ```
 The auction id then allows us access to two new endpoints
 
-First, we can get data about the actual auction
+The first of which returns data about the auction results:
 ```python
 >>> foreclosure_scraper.get_auction_sale_data(auction_id_list[0])
 {
@@ -114,7 +77,7 @@ First, we can get data about the actual auction
     'plaintiff_max_bid': '$500,000.00'
 }
 ```
-The second gives us information about the legal case and the property itself
+The second gives us some data about the legal case and the property itself
 ```python
 >>> foreclosure_scraper.get_auction_property_data(auction_id_list[2])
 {
@@ -135,6 +98,7 @@ The second gives us information about the legal case and the property itself
 <details>
 <summary>Appraisers Office</summary>
 <br>
+This scraper is responsible for scraping data from the county appraisers office through the county's <a href='https://www.miamidade.gov/Apps/PA/propertysearch/#/'>property search. </a>
 The ```foreclosure_scraper.get_auction_property_data``` response gives us a property parcel_id which we can then use to scrape data from the county appraisers office. This endpoint exposes a significant amount of data about the property itself
 
 ```python
@@ -186,4 +150,44 @@ from foreclosure_suite.scrapers.courts import CourtScraper
 It would be beneficial to eventually scrape each docket entry and search for evidence of upcoming cancellation.
 </details>
 
+## Structure
+The following structure is tentative and will be updated often
 
+```bash
+web_scraper/
+├── __init__.py
+├── scraper/
+│   ├── __init__.py
+│   ├── urls/
+│   │   ├── __init__.py
+│   │   ├── foreclosure_urls.py
+│   │   ├── appraiser_urls.py
+│   │   └── court_urls.py
+│   ├── payloads/
+│   │   ├── __init__.py
+│   │   ├── foreclosure_payloads.py
+│   │   ├── appraiser_payloads.py
+│   │   └── court_payloads.py
+│   ├── foreclosure.py
+│   ├── appraiser.py
+│   ├── court.py   
+│   ├── master.py 
+│   └── utils.py 
+├── database/
+│   ├── __init__.py
+│   └── database_handler.py
+├── data_processing/
+│   ├── __init__.py
+│   └── data_processor.py
+├── modeling/
+│   ├── __init__.py
+│   └── model_builder.py
+├── utils
+│   ├── __init__.py
+│   └── common_utils.py
+├── cli/
+│   ├── __init__.py
+│   ├── commands.py
+│   └── main.py
+└── main.py
+```
