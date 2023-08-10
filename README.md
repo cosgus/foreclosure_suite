@@ -10,7 +10,7 @@ This repo is a portfolio piece and a refactor of my original codebase. The origi
 
 This project was originally designed to create a filter on upcoming foreclosure auctions. When I first started writing this code back in 2015 there were often days that had over 100 foreclosure auctions. Buying a property at foreclosure requires a significant amount of due diligence and it was simply not possible to adequately research all of the auctions. 
 
-Foreclosure suite uses modeling to filter out auctions that are not likely worth researching. The models assess three criteriato determine if a property is worth researching.
+Foreclosure suite uses modeling to filter out auctions that are not likely worth researching. The models assess three criteria to determine if a property is worth researching.
 
 <ol>
     <li>How likely is it that the auction will be canceled prior to the sale date</li>
@@ -18,12 +18,12 @@ Foreclosure suite uses modeling to filter out auctions that are not likely worth
     <li>Given the property is sold to a 3rd party, how much will it sell for</li>
 </ol>
 
-The user can generate a list of properties that are likely to actually go to auction and sell to a 3rd party for a desirable price. We will also be able to determine if there is an association seeking damages.
+The user can generate a list of properties that are likely to actually go to auction and sell to a 3rd party for a desirable price. We will also be able to determine if there is a home owners association seeking damages.
 
 ## Structure
 The following structure is tentative and will be updated often
 
-```
+```bash
 web_scraper/
 ├── __init__.py
 ├── scraper/
@@ -71,10 +71,11 @@ Ideally, there will be a setup.py eventually
 
 ## Modules
 ### Scrapers
-There are three sources of data and accordingly 3 scrapers. There is a submodule to handle dynamic URL's and payloads for the GET and POST requests. Thes modules are imported by the scraper and abstracted from the user.
+There are three sources of data and accordingly 3 scrapers. There is a submodule to handle dynamic URL's and payloads for the GET and POST requests. These modules are imported by the scraper and abstracted from the user.
 
-Example usage:
-#### Foreclosure
+<details>
+<summary>Foreclosure</summary>
+<br>
 Foreclosure scraping begins by getting a list of auction id's for a given date.
 
 ```python
@@ -87,7 +88,7 @@ Foreclosure scraping begins by getting a list of auction id's for a given date.
 ```
 The auction id then allows us access to two new endpoints
 
-First, where we can get data about the actual auction
+First, we can get data about the actual auction
 ```python
 >>> foreclosure_scraper.get_auction_sale_data(auction_id_list[0])
 {
@@ -96,6 +97,7 @@ First, where we can get data about the actual auction
     'sale': '', 
     'plaintiff_max_bid': 'A'
 }
+
 >>> foreclosure_scraper.get_auction_sale_data(auction_id_list[1])
 {
     'status': '3rd Party Bidder', 
@@ -125,11 +127,15 @@ The second gives us information about the legal case and the property itself
     'property_address': '4041 NW 23 CT', 
     'assessed_value': '$115,890.00', 'property_appraiser_legal_description': ' 22 53 41\nGARDEN CITY PB 5-73\nW1/2 OF LOTS 29 & 30 BLK 9\nLOT SIZE 100.860 X 69\nOR 18802-0649 0999 1\nCOC 24567-1736 05 2006 1', 
     'defendant': ['LINARTE, JAIRO J', 'VEGA, LUCILA G', 'MIAMI-DADE C   UCILA', 'Sherman, David Alan'], 
-    'plaintiff': ['BANK OF NEW YORK MELLON (THE)', 'Dreilinger, Gregg R']}
+    'plaintiff': ['BANK OF NEW YORK MELLON (THE)', 'Dreilinger, Gregg R']
+}
 
 ```
-#### Appraisers Office
-The ```foreclosure_scraper.get_auction_property_data``` response gives us a property parcel_id which we can then use to scraper data from the county appraisers office. This endpoint exposes a significant amount of data about the property itself
+</details>
+<details>
+<summary>Appraisers Office</summary>
+<br>
+The ```foreclosure_scraper.get_auction_property_data``` response gives us a property parcel_id which we can then use to scrape data from the county appraisers office. This endpoint exposes a significant amount of data about the property itself
 
 ```python
 from foreclosure_suite.scrapers.appraiser import AppraiserScraper
@@ -162,8 +168,14 @@ dict_keys(['Additionals', 'Assessment', 'Benefit', 'Building', 'ClassifiedAgInfo
 ear1', 'SalesInfos', 'SiteAddress', 'Taxable'])
 
 ```
-#### Court Records
-The ```foreclosure_scraper.get_auction_property_data``` response gives us a case number which we can then use to scraper data from the clerk of courts. The clerk of courts website uses aspx.net and is very slow to scrape. The only datapoint we currently extract is number of items on the docket
+</details>
+
+<details>
+<summary>Court Records</summary>
+<br>
+The ```foreclosure_scraper.get_auction_property_data``` response gives us a case number which we can then use to scrape data from the clerk of courts. The clerk of courts website uses aspx.net and is very slow to scrape. The only datapoint we currently extract is number of items on the docket
+
+
 ```python
 from foreclosure_suite.scrapers.courts import CourtScraper
 
@@ -172,6 +184,6 @@ from foreclosure_suite.scrapers.courts import CourtScraper
 212
 ```
 It would be beneficial to eventually scrape each docket entry and search for evidence of upcoming cancellation.
-
+</details>
 
 
