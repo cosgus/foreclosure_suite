@@ -6,26 +6,31 @@ from datetime import datetime, timedelta
 
 def main():
     
-    # scraper = ForeclosureScraper()
+    foreclosure_scraper = ForeclosureScraper()
 
-    # date = datetime.now() + timedelta(-5)
-    # aids = scraper.get_days_aids(date=date)
+    date = datetime(2023,8,9)
+    aids_list = foreclosure_scraper.get_days_aids(date=date)
 
-    # auction_id = aids[0]
+    auction_id = aids_list[0]
 
-    # data = scraper.get_auction_data(auction_id)
+    auction_data = foreclosure_scraper.get_auction_data(auction_id)
 
-    # print(data['case_number_(count)'])
+    case_number = auction_data["case_number_(count)"]
+    print(f'Case Number: {case_number}')
 
-    court_scraper = CourtScraper('2010-052742-CA-01')
+    parcel_id = auction_data["parcel_id"]
+    print(f'Parcel ID (folio): {parcel_id}')
+
+    court_scraper = CourtScraper(case_number)
     court_scraper.login()
     dc = court_scraper.post_court()
-    
+    print(f'Docket Count: {dc}')
 
-    # print(dc.find('span',{'class', 'ctl00_ContentPlaceHolder1_lblDocketCount'}))
-    # print(dc.select('#ctl00_ContentPlaceHolder1_lblDocketCount'))
-    # print(data['case_number_(count)'])
-    return dc
+    appraiser_scraper = AppraiserScraper(parcel_id)
+    property_data = appraiser_scraper.get_appraisers_json()
+    
+    for key, value in property_data['PropertyInfo'].items():
+        print(f'{key}: {value}')
 
 if __name__ == '__main__':
     main()

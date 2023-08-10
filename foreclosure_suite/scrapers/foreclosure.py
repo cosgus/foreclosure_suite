@@ -67,7 +67,7 @@ class ForeclosureScraper(Scraper):
         self.urls.set_date_url(date)
         return self.post_soup(self.urls.date_url, self.payloads.cookie)
 
-    def get_days_aids(self, soup:BeautifulSoup = None, date:datetime = None) -> list:
+    def get_days_aids(self, date:datetime = None, soup:BeautifulSoup = None, ) -> list:
         """
         Gets all the auction id's for a particular day and returns a list. 
         Accepts BeautifulSoup object or a datetime object from which it will 

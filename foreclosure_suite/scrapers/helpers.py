@@ -27,7 +27,7 @@ def get_view_state(url:str) -> tuple:
     Used in scraping asp.net sites
     """
     res = requests.post(url, cookies=court_payloads.headers, timeout=10)
-    soup = BeautifulSoup(res.text, features='lxml')
+    soup = BeautifulSoup(res.text, features='html.parser')
 
     view_state = soup.select("#__VIEWSTATE")[0]['value']
     event_validation = soup.select('#__EVENTVALIDATION')[0]['value']

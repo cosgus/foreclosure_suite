@@ -29,7 +29,7 @@ class Scraper:
         Posts a payload to a url and returns a BeautifulSoup object 
         """
         res = self.post(url, payload)
-        return BeautifulSoup(res.text, 'lxml')
+        return BeautifulSoup(res.text, 'html.parser')
 
     def get(self, url:str, headers:dict = None) -> requests.Response:
         """
