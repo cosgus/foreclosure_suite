@@ -1,9 +1,9 @@
 import mysql.connector
-import pandas as pd
 import yaml
-from foreclosure_suite.database import queries
 
-class BaseHandler:
+from foreclosure_suite.database import schema
+
+class MySQLHandler:
     """
     This handler handles connection and execution of the MySQL statements.
     """
@@ -13,29 +13,37 @@ class BaseHandler:
         with open('config.yaml') as config:
             self.connection_data = yaml.safe_load(config)['databases']['mysql']
 
-        self.connection = None
+        self.conn = None
         self.is_connected = False
+        self.connect()
+        self.cursor = self.conn.cursor()
 
     def __del__(self):
         if self.is_connected is True:
             self.disconnect()
 
     def connect(self, connection_data = None):
+        
         if self.is_connected is True:
-            return self.connection
+            return self.conn 
         
         self.connection_data = connection_data if connection_data else self.connection_data
         
-        connection = mysql.connector.connect(**self.connection_data)
+        self.conn = mysql.connector.connect(**self.connection_data)
         self.is_connected = True
-        self.connection = connection
 
-        return self.connection
+        return self.conn
+    
+    def create_table(self, table_name, schema):
+        query = f"CREATE TABLE IF NOT EXISTS {table_name} ({schema});"
+        self.cursor.execute(query)
+        self.conn.commit()
+
 
     def disconnect(self):
         if self.is_connected is False:
             return
-        self.connection.close()
+        self.conn.close()
         self.is_connected = False
         return
 
@@ -46,7 +54,7 @@ class BaseHandler:
         :return: returns the records from the current recordset
         """
 
-        connection = self.connection if self.is_connected else self.connect() 
+        connection = self.conn if self.is_connected else self.connect() 
 
         with connection.cursor(dictionary=True, buffered=True) as cur:
             cur.execute(query)
@@ -89,10 +97,9 @@ class BaseHandler:
 
 def main():
 
-    handler = BaseHandler()
-    handler.connect()
-    handler.query(queries.create_property_table)
-
+    handler = MySQLHandler()
+    handler.create_table('property', schema.property_table)
+    handler.create_table('auction', schema.auction_table)
 
 if __name__ == '__main__':
     

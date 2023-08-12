@@ -1,8 +1,7 @@
-
-create_auction_table = """
-CREATE TABLE auctions(
-    id PRIMARY KEY NOT NULL,
-    auction_id INT NOTNULL,
+auction_table = """
+    id int NOT NULL,
+    auction_id INT NOT NULL,
+    property_id VARCHAR(30),
     date DATE,
     time TIME,
     status VARCHAR(255),
@@ -17,17 +16,17 @@ CREATE TABLE auctions(
     docket_count INT,
     auction_count_on_day INT,
     place_in_line INT,
-    UNIQUE(auction_id),
-    FOREIGN KEY (property_id) REFERENCES properties(property_id)
-);"""
+    PRIMARY KEY (id),
+    UNIQUE (auction_id),
+    FOREIGN KEY (id) REFERENCES properties(id)
+"""
 
-
-create_property_table = """
-CREATE TABLE properties (
+property_table = """
     id int NOT NULL,
     street_address varchar(255),
     city VARCHAR(255),
     zip INT,
+    folio VARCHAR(255),
     assessed_value DECIMAL(15,2),
     bedroom_count INT,
     bathroom_count INT,
@@ -38,13 +37,4 @@ CREATE TABLE properties (
     lot_size INT,
     zone_description VARCHAR(255),
     PRIMARY KEY (id)
-);
 """
-
-test = """CREATE TABLE Persons (
-    ID int NOT NULL,
-    LastName varchar(255) NOT NULL,
-    FirstName varchar(255),
-    Age int,
-    PRIMARY KEY (ID)
-); """
