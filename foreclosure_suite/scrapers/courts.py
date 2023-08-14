@@ -20,8 +20,9 @@ class CourtScraper(Scraper):
     def __init__(self, case_number:str = None) -> None:
         super().__init__()
         self.session = requests.session()
-        self.payloads = court_payloads
+        self.payloads = court_payloads.CourtPayloads()
         self.urls = court_urls.URLS()
+        self.parser = CourtParser()
         self.case_number = ''
         if case_number:
             self.ready_search(case_number)
@@ -31,9 +32,10 @@ class CourtScraper(Scraper):
         Takes a case number and returns the total number of entries in the court docket.
         self.session.login and self.set_court_form must have been run first
         """
-        soup = self.post_court_soup(case_number)
-        docket_count = soup.select('#ctl00_ContentPlaceHolder1_lblDocketCount')[0].text
-        return docket_count
+        if case_number:
+            self.ready_search(case_number)
+        html_content = self.post(self.urls.search_url, self.payloads.court_form).text
+        return self.parser.extract_docket_count(html_content)
 
     def login(self) -> requests.Response:
         """
@@ -56,8 +58,7 @@ class CourtScraper(Scraper):
         Gets aspx view state and event validation and updates aspx login_form
         """
         view_state, event_validation = get_view_state(self.urls.login_url)
-        self.payloads.login['__VIEWSTATE'] = view_state
-        self.payloads.login['__EVENTVALIDATION'] = event_validation
+        self.payloads.set_login_form(view_state, event_validation)
 
     def set_case_number(self, case_number) -> None:
         """
@@ -75,12 +76,7 @@ class CourtScraper(Scraper):
         if case_number:
             self.set_case_number(case_number)
         view_state, event_validation = get_view_state(self.urls.search_url)
-        self.payloads.court_form['__VIEWSTATE'] = view_state
-        self.payloads.court_form['__EVENTVALIDATION'] = event_validation
-        self.payloads.court_form['ctl00$ContentPlaceHolder1$txtLCNYearSTD_localCaseContent'] = self.case_number[0:4]
-        self.payloads.court_form['ctl00$ContentPlaceHolder1$txtLCNSeqSTD_localCaseContent'] = self.case_number[4:10]
-        self.payloads.court_form['ctl00$ContentPlaceHolder1$localCaseCodesSelect_localCaseContent'] = self.case_number[10:12]
-        self.payloads.court_form['ctl00$ContentPlaceHolder1$txtLCNLocSTD_localCaseContent'] = '01'
+        self.payloads.set_court_form(view_state, event_validation, case_number)
 
     def ready_search(self, case_number:str) -> None:
         """
@@ -88,7 +84,8 @@ class CourtScraper(Scraper):
         attribute and setting aspx court_form.
         """
         self.set_case_number(case_number)
-        self.set_court_form(case_number)
+        self.set_court_form(self.case_number)
+
 
     def post_court_soup(self, case_number:str = None) -> BeautifulSoup:
         """
@@ -98,7 +95,6 @@ class CourtScraper(Scraper):
         """
         if case_number:
             self.ready_search(case_number)
-        # self.payloads.headers = None
         return self.post_soup(self.urls.search_url, self.payloads.court_form)
 
     def post_court(self, case_number:str = None) -> requests.Response:
@@ -111,3 +107,10 @@ class CourtScraper(Scraper):
             self.ready_search(case_number)
         return self.post(self.urls.search_url, self.payloads.court_form)
         
+
+class CourtParser:
+
+    def extract_docket_count(self, html_content:str) -> int:
+        soup = BeautifulSoup(html_content, 'html.parser')
+        docket_count = soup.select('#ctl00_ContentPlaceHolder1_lblDocketCount')[0].text
+        return docket_count

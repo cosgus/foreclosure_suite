@@ -8,7 +8,7 @@ from requests.packages.urllib3.poolmanager import PoolManager
 
 from bs4 import BeautifulSoup
 
-from foreclosure_suite.scrapers.payloads import court_payloads
+from foreclosure_suite.scrapers.payloads.court_payloads import CourtPayloads
 
 class MyAdapter(HTTPAdapter):
     """
@@ -26,7 +26,7 @@ def get_view_state(url:str) -> tuple:
     Takes a url and returns viewstate and event validation
     Used in scraping asp.net sites
     """
-    res = requests.post(url, cookies=court_payloads.headers, timeout=10)
+    res = requests.post(url, cookies=CourtPayloads().headers, timeout=10)
     soup = BeautifulSoup(res.text, features='html.parser')
 
     view_state = soup.select("#__VIEWSTATE")[0]['value']
