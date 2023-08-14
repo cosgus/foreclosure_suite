@@ -13,7 +13,7 @@ def main():
 
     auction_id = aids_list[0]
 
-    auction_data = foreclosure_scraper.get_auction_data(auction_id)
+    auction_data = foreclosure_scraper.get_all_auction_data(auction_id)
 
     case_number = auction_data["case_number_(count)"]
     print(f'Case Number: {case_number}')
@@ -23,7 +23,7 @@ def main():
 
     court_scraper = CourtScraper(case_number)
     court_scraper.login()
-    dc = court_scraper.post_court()
+    dc = court_scraper.get_docket_count()
     print(f'Docket Count: {dc}')
 
     appraiser_scraper = AppraiserScraper(parcel_id)

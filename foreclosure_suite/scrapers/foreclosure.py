@@ -3,13 +3,14 @@ Scraper class built for scraping data from realforeclose.miamidade.gov
 """
 import math
 from datetime import datetime
+from typing import List
 
 import requests
 
 from bs4 import BeautifulSoup
 
 from foreclosure_suite.scrapers.payloads import foreclosure_payloads
-from foreclosure_suite.scrapers.base import Scraper
+from foreclosure_suite.scrapers.base import Scraper, Parser
 from foreclosure_suite.scrapers.urls import foreclosure_urls
 from foreclosure_suite.scrapers.helpers import MyAdapter
 
@@ -24,6 +25,7 @@ class ForeclosureScraper(Scraper):
         super().__init__()
         self.urls = foreclosure_urls.URLS()
         self.payloads = foreclosure_payloads
+        self.parser = ForeclosureParser()
         self.session = requests.Session()
         self.session.mount(self.urls.main_url, MyAdapter())
         self.days_aid_list = None
@@ -60,51 +62,75 @@ class ForeclosureScraper(Scraper):
         self.clear_notice()
         self.clear_notice(nid = 9208)
 
-    def get_days_soup(self, date:datetime) -> BeautifulSoup:
+    def get_days_response(self, date:datetime) -> requests.Response:
         """
-        Returns a BeautifulSoup object containing the hypertext for a given auction calendar day
+        Returns response from foreclosure website containing data for a given date
         """
         self.urls.set_date_url(date)
-        return self.post_soup(self.urls.date_url, self.payloads.cookie)
+        return self.post(self.urls.date_url, self.payloads.cookie)
+    
+    def get_aid_url_response(self, auction_id:str) -> requests.Response:
+        self.urls.set_aid_url(auction_id)
+        return self.post(self.urls.aid_url, self.payloads.cookie)
+    
+    def get_aid_xhr_response(self, auction_id:int) -> requests.Response:
+        self.urls.set_aid_xhr_url(auction_id)
+        return self.post(self.urls.aid_xhr, self.payloads.cookie)
+    
+    def get_bidder_response(self, auction_id:int) -> requests.Response:
+        self.urls.set_bidder_url(auction_id)
+        return self.post(self.urls.bidder_url, self.payloads.cookie)
+    
+    def get_days_aids(self, date:datetime=None) -> List:
+        html_content = self.get_days_response(date).text
+        return self.parser.extract_days_aids(html_content)
 
-    def get_days_aids(self, date:datetime = None, soup:BeautifulSoup = None, ) -> list:
+    def get_auction_data(self, auction_id:int) -> requests.Response:
+        html_content = self.get_aid_url_response(auction_id).text
+        return self.parser.extract_auction_property_data(html_content)
+    
+    def get_sale_data(self, auction_id:int) -> dict:
+        return self.get_aid_xhr_response(auction_id).json()
+    
+    def get_bidder_data(self, auction_id:int) -> dict:
+        html_content = self.get_bidder_response(auction_id).text
+        return self.parser.extract_bidder_data(html_content)
+    
+    def get_all_auction_data(self, auction_id:int) -> dict:
+        auction_data = self.get_auction_data(auction_id)
+        sale_data = self.get_sale_data(auction_id)
+        return {**auction_data, **sale_data}
+    
+
+class ForeclosureParser:
+
+    def extract_days_aids(self, html_content:str) -> list:
         """
         Gets all the auction id's for a particular day and returns a list. 
         Accepts BeautifulSoup object or a datetime object from which it will 
         request its own soup
         """
-        if not soup:
-            soup = self.get_days_soup(date)
+        soup = BeautifulSoup(html_content, 'html.parser')
         aids = soup.find(id = 'ALB').text.split(',')
         return aids
 
-    def get_days_page_count(self, soup:BeautifulSoup=None, date:datetime = None) -> int:
+    def extract_days_page_count(self, html_content:str) -> int:
         """
         Gets the total number of pages of a days auctions. The foreclosure website limits auctions
         to 10 per page
         """
-        aids = self.get_days_aids(soup, date)
+        aids = self.extract_days_aids(html_content)
         total_pages = math.ceil(len(aids)/10)
         return total_pages
 
-    def parse_days_page(self, date:datetime) -> None:
-        """
-        Parses desired information from a given days auction page. Gets both the auction id
-        list as well as the total page count and stores them in class attributes.
-        """
-        self.urls.set_date_url(date)
-        soup = self.post_soup(self.urls.date_url)
-        self.days_page_count = self.get_days_page_count(soup = soup)
-        self.days_aid_list = self.get_days_aids(soup = soup)
 
-    def get_auction_property_data(self, auction_id:str) -> dict:
+    def extract_auction_property_data(self, html_content:str) -> dict:
         """
         Posts to the aid_url and extracts desired data. 
         Contains data about the property being auctioned
         """
         data = {}
-        self.urls.set_aid_url(auction_id)
-        soup = self.post_soup(self.urls.aid_url)
+        soup = BeautifulSoup(html_content, 'html.parser')
         auction_details = soup.find_all("tr", {'valign': "top"})
 
         for detail in auction_details:
@@ -128,9 +154,9 @@ class ForeclosureScraper(Scraper):
                     data['plaintiff'].append(details[1].text)
         return data
 
-    def get_auction_sale_data(self, auction_id:str) -> dict:
+    def extract_sale_data(self, json_response:dict) -> dict:
         """
-        Posts to aid_xhr_url and extracts desired data. Contains data about the auction sale
+        Extracts desired data. Contains data about the auction sale
         """
 
         data = {
@@ -140,15 +166,10 @@ class ForeclosureScraper(Scraper):
             'plaintiff_max_bid': ''
         }
 
-        self.urls.set_aid_xhr_url(auction_id)
-        sale_data = self.post(self.urls.aid_xhr, self.payloads.cookie).json()
-
-        auction_data = sale_data['ADATA']
+        auction_data = json_response['ADATA']
         auction_item = auction_data['AITEM'][0]
         sold_to = auction_item['ST']
         b_entry = auction_item['B']
-
-        # print(auction_item)
 
         if sold_to:
             data.update({'status': sold_to})
@@ -161,26 +182,10 @@ class ForeclosureScraper(Scraper):
 
         return data
 
-    def get_auction_data(self, auction_id:str) -> dict:
-        """
-        Performs both get_property_data and get_auction_data
-        """
 
-        data = {}
-
-        property_data = self.get_auction_property_data(auction_id)
-        sale_data = self.get_auction_sale_data(auction_id)
-
-        data.update(property_data)
-        data.update(sale_data)
-
-        return data
-
-    def get_bidder_data(self, auction_id:str) -> dict:
+    def get_extract_bidder_data(self, html_content:str) -> dict:
         """
         Returns the name of the winning bidder. Only works on
         a closed auction that sold to 3rd party or to plaintiff
         """
-        self.urls.set_bidder_url(auction_id)
-        data = self.post_soup(self.urls.bidder_url)
-        return data
+        return BeautifulSoup(html_content)

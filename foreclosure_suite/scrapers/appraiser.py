@@ -40,16 +40,3 @@ class AppraiserScraper(Scraper):
         """
         self.parcel_id = parcel_id
         self.urls.set_appraiser_url(parcel_id.replace('-',''))
-
-    def get_property_info(self, data:dict=None) -> dict:
-        """
-        Takes get_appraisers_json and extracts property info from JSON and returns 
-        it in a dictionary. If no data is supplied, it will request its own while assuming that 
-        folio has already been set.
-        """
-        if not data:
-            data = self.get_appraisers_json()
-
-        property_info = data['PropertyInfo']
-        return property_info
-  

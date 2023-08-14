@@ -24,13 +24,6 @@ class Scraper:
         res = self.session.post(url, data = payload, headers = self.payloads.headers, timeout = 10)
         return res
 
-    def post_soup(self, url:str, payload:dict = None) -> BeautifulSoup:
-        """
-        Posts a payload to a url and returns a BeautifulSoup object 
-        """
-        res = self.post(url, payload)
-        return BeautifulSoup(res.text, 'html.parser')
-
     def get(self, url:str, headers:dict = None) -> requests.Response:
         """
         Performs a GET request with pre set headers but optionally
