@@ -18,7 +18,7 @@ auction_table = """
     place_in_line INT,
     PRIMARY KEY (id),
     UNIQUE (auction_id),
-    FOREIGN KEY (id) REFERENCES properties(id)
+    FOREIGN KEY (id) REFERENCES property(id)
 """
 
 property_table = """

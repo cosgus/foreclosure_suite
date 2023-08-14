@@ -1,44 +1,24 @@
 import mysql.connector
+import psycopg2
 import yaml
 
 from foreclosure_suite.database import schema
 
-class MySQLHandler:
-    """
-    This handler handles connection and execution of the MySQL statements.
-    """
+class DatabaseHandler:
 
     def __init__(self):
-
-        with open('config.yaml') as config:
-            self.connection_data = yaml.safe_load(config)['databases']['mysql']
-
         self.conn = None
         self.is_connected = False
-        self.connect()
-        self.cursor = self.conn.cursor()
+        self.connection_data = None
 
     def __del__(self):
         if self.is_connected is True:
             self.disconnect()
 
-    def connect(self, connection_data = None):
-        
-        if self.is_connected is True:
-            return self.conn 
-        
-        self.connection_data = connection_data if connection_data else self.connection_data
-        
-        self.conn = mysql.connector.connect(**self.connection_data)
-        self.is_connected = True
-
-        return self.conn
-    
     def create_table(self, table_name, schema):
         query = f"CREATE TABLE IF NOT EXISTS {table_name} ({schema});"
         self.cursor.execute(query)
         self.conn.commit()
-
 
     def disconnect(self):
         if self.is_connected is False:
@@ -46,7 +26,7 @@ class MySQLHandler:
         self.conn.close()
         self.is_connected = False
         return
-
+    
     def query(self, query: str):
         """
         Receive SQL query and runs it
@@ -94,12 +74,67 @@ class MySQLHandler:
         q = f"DESCRIBE {table_name};"
         result = self.query(q)
         return result
+    
+    def insert(self,table , data):
+        print(f'inserting data into {table} ... ')
+
+class MySQLHandler(DatabaseHandler):
+    """
+    This handler handles connection and execution of the MySQL statements.
+    """
+    def __init__(self):
+
+        super().__init__()
+
+        with open('config.yaml') as config:
+            self.connection_data = yaml.safe_load(config)['databases']['mysql']
+
+        self.connect()
+        self.cursor = self.conn.cursor()
+
+    def connect(self, connection_data = None):
+        
+        if self.is_connected is True:
+            return self.conn 
+        
+        self.connection_data = connection_data if connection_data else self.connection_data
+        
+        self.conn = mysql.connector.connect(**self.connection_data)
+        self.is_connected = True
+
+        return self.conn
+
+    
+class PostgresHandler(DatabaseHandler):
+
+    def __init__(self):
+
+        super().__init__()
+
+        with open('config.yaml') as config:
+            self.connection_data = yaml.safe_load(config)['databases']['postgres']
+
+        self.connect()
+        self.cursor = self.conn.cursor()
+
+    def connect(self, connection_data = None):
+        
+        if self.is_connected is True:
+            return self.conn 
+        
+        self.connection_data = connection_data if connection_data else self.connection_data
+        
+        self.conn = psycopg2.connect(**self.connection_data)
+        self.is_connected = True
+
+        return self.conn
 
 def main():
 
-    handler = MySQLHandler()
+    handler = PostgresHandler()
     handler.create_table('property', schema.property_table)
     handler.create_table('auction', schema.auction_table)
+    
 
 if __name__ == '__main__':
     
