@@ -152,9 +152,14 @@ It would be beneficial to eventually scrape each docket entry and search for evi
 
 ## Data
 
-Here is a working schema of the database tables
+Here is a working schema of the database tables. Created using [dbdiagram](https://dbdiagram.io)
 <h4 align="center">
-    <img width="80%" align="center" src="./ext/raw_data_schema.png">
+    Simple
+    <img src="./ext/raw_data_schema.png">
+    <br>
+    <br>
+    Alternative
+    <img src = "./ext/expanded_data_schema.png">
 </h4>
 
 ## Structure
