@@ -156,6 +156,7 @@ Here is a working schema of the database tables
 <h4 align="center">
     <img width="80%" align="center" src="./ext/raw_data_schema.png">
 </h4>
+
 ## Structure
 The following structure is tentative and will be updated often
 
