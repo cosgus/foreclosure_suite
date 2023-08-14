@@ -2,7 +2,7 @@
     <i align="center">A project that scrapes and models data from Miami-Dade foreclosure pipeline to give investors some forward guidance</i>
 </p>
 <h4 align="center">
-    <img src="https://www.miamidade.realforeclose.com/CORE/System/Themes/Theme_1/Images/Header/header_left_VN_15.png">
+    <img src="./ext/clerk_of_courts_logo.png">
 </h4>
 
 ## Purpose
@@ -150,6 +150,12 @@ from foreclosure_suite.scrapers.courts import CourtScraper
 It would be beneficial to eventually scrape each docket entry and search for evidence of upcoming cancellation.
 </details>
 
+## Data
+
+Here is a working schema of the database tables
+<h4 align="center">
+    <img width="80%" align="center" src="./ext/raw_data_schema.png">
+</h4>
 ## Structure
 The following structure is tentative and will be updated often
 
