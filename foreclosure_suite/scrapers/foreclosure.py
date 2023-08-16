@@ -10,7 +10,7 @@ import requests
 from bs4 import BeautifulSoup
 
 from foreclosure_suite.scrapers.payloads import foreclosure_payloads
-from foreclosure_suite.scrapers.base import Scraper, Parser
+from foreclosure_suite.scrapers.base import Scraper
 from foreclosure_suite.scrapers.urls import foreclosure_urls
 from foreclosure_suite.scrapers.helpers import MyAdapter
 
@@ -82,6 +82,9 @@ class ForeclosureScraper(Scraper):
         return self.post(self.urls.bidder_url, self.payloads.cookie)
     
     def get_days_aids(self, date:datetime=None) -> List:
+        """
+        Takes a datetime and returns a list of auction_id's on that date
+        """
         html_content = self.get_days_response(date).text
         return self.parser.extract_days_aids(html_content)
 
