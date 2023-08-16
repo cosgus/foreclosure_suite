@@ -62,6 +62,17 @@ class ForeclosureScraper(Scraper):
         self.clear_notice()
         self.clear_notice(nid = 9208)
 
+    def post(self,url:str, payload:dict = None) -> requests.Response:
+        """
+        Uses session method to post. User can still access
+        self.session but this method automates the headers argument
+        """ 
+        res = super().post(url, payload = payload)
+        if "START HERE" in res.text:
+            self.login()
+            res = super().post(url, data = payload)
+        return res
+
     def get_days_response(self, date:datetime) -> requests.Response:
         """
         Returns response from foreclosure website containing data for a given date
