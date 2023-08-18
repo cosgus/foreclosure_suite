@@ -86,7 +86,7 @@ class DatabaseHandler:
             if returning:
                 query += f" RETURNING {returning}"
             self.cursor.execute(query, tuple(data.values()))
-            print("Data inserted successfully.")
+            print(f"        {table_name} data inserted successfully.")
         else:
             print("Invalid data format. Only dictionaries are supported for insertion.")
 
@@ -129,11 +129,10 @@ class PostgresHandler(DatabaseHandler):
             print(f'dropping {table}')
             self.cursor.execute(f'DROP TABLE {table[0]} CASCADE;')
         self.conn.commit()
-        self.disconnect()
+
 
     def create_databases(self):
 
-        handler = PostgresHandler()
         schema = Postgres()
         self.create_table('property', schema.property_table)
         self.create_table('court_case', schema.court_case)
@@ -144,7 +143,93 @@ class PostgresHandler(DatabaseHandler):
         self.create_table('no_folio', schema.no_folio)
         self.create_table('multiple_parcel', schema.multiple_parcel)
     
+    def reset(self):
+        self.drop_all_tables()
+        self.create_databases()
+
+class ForeclosureHandler:
+
+    def __init__(self):
+        
+        self.handler = PostgresHandler()
+        self.aid = None
+        self.property_info = None
+        self.auction_data = None
+        self.docket_count = None
+        self.pk = {}
+
+    def set_data(self, data):
+        self.aid = data['aid']
+        self.auction_data = data['auction_data']
+        self.property_info = data['property_info']
+        self.docket_count = data['docket_count']
+
+    def handle_data(self, data):
+
+        if self.aid != data['aid']:
+            self.set_data(data)
+        
+        self.pk['property'] = self.handler.insert('property', self.property_info)
+    
+        case_data = self.create_case_data()
+        self.pk['case'] = self.handler.insert('court_case', case_data)
+
+        party_data = self.create_party_data()
+        self.pk['party'] = self.handler.insert('party', party_data)
+
+        auction_data = self.create_auction_data()
+        self.pk['auction'] = self.handler.insert('auction', auction_data)
+
+        court_case_party = {
+            'party_id': self.pk['party'],
+            'case_id': self.pk['case']
+        }
+        self.handler.insert('case_party', court_case_party)
+
+        auction_party = {
+            'party_id': self.pk['party'],
+            'auction_id': self.pk['auction']
+        }
+        self.handler.insert('auction_party', auction_party)
+
+    def create_case_data(self):
+        case_data = {
+            'case_number': self.auction_data['case_number'],
+            'docket_count': self.docket_count
+        }
+        return case_data
+    
+    def create_party_data(self):
+        party_data = {}
+        for plaintiff in self.auction_data['plaintiff']:
+            party_data.update({
+                'party_name': plaintiff,
+                'side': 'plaintiff'
+                })
+        for defendant in self.auction_data['defendant']:
+            party_data.update({
+                'party_name': defendant,
+                'side': 'defendant'
+                })
+        return party_data
+    
+    def create_auction_data(self):
+        auction_data = self.auction_data.copy()
+        auction_data.pop('count_description')
+        auction_data.pop('parcel_id')
+        auction_data.pop('case_number')
+        auction_data.pop('property_address')
+        auction_data.pop('assessed_value')
+        auction_data.pop('property_appraiser_legal_description')
+        auction_data.pop('defendant')
+        auction_data.pop('plaintiff')
+        
+        auction_data.update({'time': self.auction_data['time'][11:16]})
+        auction_data.update({'date': self.auction_data['time'][:10]})
+        auction_data.update({'property_id':self.pk['property']})
+        auction_data.update({'case_id': self.pk['case']})
+
+        return auction_data
 
 if __name__ == '__main__':
-    
-    PostgresHandler().create_databases()
+    PostgresHandler().reset()

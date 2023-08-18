@@ -15,14 +15,14 @@ def main():
 
     auction_data = foreclosure_scraper.get_all_auction_data(auction_id)
 
-    case_number = auction_data["case_number_(count)"]
+    case_number = auction_data["case_number"]
     print(f'Case Number: {case_number}')
 
     parcel_id = auction_data["parcel_id"]
     print(f'Parcel ID (folio): {parcel_id}')
 
     court_scraper = CourtScraper(case_number)
-    court_scraper.login()
+    # court_scraper.login()
     dc = court_scraper.get_docket_count()
     print(f'Docket Count: {dc}')
 

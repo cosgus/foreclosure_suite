@@ -178,9 +178,8 @@ class ForeclosureParser:
         data = {
             'status': '',
             'time': '',
-            'sale': '',
+            'sale_amount': '',
             'plaintiff_max_bid': '',
-            'final_judgement': ''
         }
 
         auction_data = json_response['ADATA']
@@ -191,7 +190,7 @@ class ForeclosureParser:
         if sold_to:
             data.update({'status': sold_to})
             data.update({'time':  b_entry})
-            data.update({'sale': auction_item['D']})
+            data.update({'sale_amount': auction_item['D']})
         else:
             data.update({'status': b_entry})
 

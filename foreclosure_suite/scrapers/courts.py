@@ -24,6 +24,7 @@ class CourtScraper(Scraper):
         self.urls = court_urls.URLS()
         self.parser = CourtParser()
         self.case_number = ''
+        self.login()
         if case_number:
             self.ready_search(case_number)
 
