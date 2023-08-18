@@ -70,7 +70,7 @@ class ForeclosureScraper(Scraper):
         res = super().post(url, payload = payload)
         if "START HERE" in res.text:
             self.login()
-            res = super().post(url, data = payload)
+            res = super().post(url, payload = payload)
         return res
 
     def get_days_response(self, date:datetime) -> requests.Response:
@@ -104,7 +104,8 @@ class ForeclosureScraper(Scraper):
         return self.parser.extract_auction_property_data(html_content)
     
     def get_sale_data(self, auction_id:int) -> dict:
-        return self.get_aid_xhr_response(auction_id).json()
+        json_data = self.get_aid_xhr_response(auction_id).json()
+        return self.parser.extract_sale_data(json_data)
     
     def get_bidder_data(self, auction_id:int) -> dict:
         html_content = self.get_bidder_response(auction_id).text
@@ -148,7 +149,7 @@ class ForeclosureParser:
         auction_details = soup.find_all("tr", {'valign': "top"})
 
         for detail in auction_details:
-            key = detail.find('th', class_='bLab').text.lower().replace(' ', '_').replace(':','')
+            key = detail.find('th', class_='bLab').text.lower().replace(' ', '_').replace(':','').replace('_(count)','')
             value = detail.find('td', class_='bDat').text
             data.update({key: value})
 
@@ -166,6 +167,7 @@ class ForeclosureParser:
                     data['defendant'].append(details[1].text)
                 if 'PLAINTIFF' in details[0].text:
                     data['plaintiff'].append(details[1].text)
+
         return data
 
     def extract_sale_data(self, json_response:dict) -> dict:
@@ -177,7 +179,8 @@ class ForeclosureParser:
             'status': '',
             'time': '',
             'sale': '',
-            'plaintiff_max_bid': ''
+            'plaintiff_max_bid': '',
+            'final_judgement': ''
         }
 
         auction_data = json_response['ADATA']

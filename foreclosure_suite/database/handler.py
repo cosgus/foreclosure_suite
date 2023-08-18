@@ -1,8 +1,9 @@
 import mysql.connector
 import psycopg2
 import yaml
+import pandas as pd
 
-from foreclosure_suite.database import schema
+from foreclosure_suite.database.schema import Postgres
 
 class DatabaseHandler:
 
@@ -36,18 +37,18 @@ class DatabaseHandler:
 
         connection = self.conn if self.is_connected else self.connect() 
 
-        with connection.cursor(dictionary=True, buffered=True) as cur:
+        with connection.cursor() as cur:
             cur.execute(query)
 
             result = cur.fetchall()
-            response = pd.DataFrame(
-                    result,
-                    columns=[x[0] for x in cur.description]
-                )
+            # response = pd.DataFrame(
+            #         result,
+            #         columns=[x[0] for x in cur.description]
+            #     )
 
-            connection.commit()
+            # connection.commit()
 
-        return response
+        return result
 
     def select_data(self, query, params=None):
         self.cursor.execute(query, params) if params else self.cursor.execute(query)
@@ -63,7 +64,8 @@ class DatabaseHandler:
         """
         Get a list with all of the tabels in MySQL
         """
-        q = "SHOW TABLES;"
+        q = """SELECT table_name FROM information_schema.tables
+       WHERE table_schema = 'public'"""
         result = self.query(q)
         return result
 
@@ -75,34 +77,18 @@ class DatabaseHandler:
         result = self.query(q)
         return result
     
-    def insert(self,table , data):
-        print(f'inserting data into {table} ... ')
+    def insert(self,table_name =None , data=None, returning = None):
 
-class MySQLHandler(DatabaseHandler):
-    """
-    This handler handles connection and execution of the MySQL statements.
-    """
-    def __init__(self):
-
-        super().__init__()
-
-        with open('config.yaml') as config:
-            self.connection_data = yaml.safe_load(config)['databases']['mysql']
-
-        self.connect()
-        self.cursor = self.conn.cursor()
-
-    def connect(self, connection_data = None):
-        
-        if self.is_connected is True:
-            return self.conn 
-        
-        self.connection_data = connection_data if connection_data else self.connection_data
-        
-        self.conn = mysql.connector.connect(**self.connection_data)
-        self.is_connected = True
-
-        return self.conn
+        if isinstance(data, dict):
+            columns = ', '.join(data.keys())
+            values = ', '.join(['%s'] * len(data))
+            query = f"INSERT INTO {table_name} ({columns}) VALUES ({values})"
+            if returning:
+                query += f" RETURNING {returning}"
+            self.cursor.execute(query, tuple(data.values()))
+            print("Data inserted successfully.")
+        else:
+            print("Invalid data format. Only dictionaries are supported for insertion.")
 
     
 class PostgresHandler(DatabaseHandler):
@@ -129,13 +115,36 @@ class PostgresHandler(DatabaseHandler):
 
         return self.conn
 
-def main():
+    def insert(self,table_name =None , data=None, returning = None):
+        try:
+            super().insert(table_name, data, returning)
+            return True
+        except psycopg2.errors.UniqueViolation:
+            self.conn.rollback()
+            return False
 
-    handler = PostgresHandler()
-    handler.create_table('property', schema.property_table)
-    handler.create_table('auction', schema.auction_table)
+    def drop_all_tables(self):
+        tables = self.get_tables()
+        for table in tables:
+            print(f'dropping {table}')
+            self.cursor.execute(f'DROP TABLE {table[0]} CASCADE;')
+        self.conn.commit()
+        self.disconnect()
+
+    def create_databases(self):
+
+        handler = PostgresHandler()
+        schema = Postgres()
+        self.create_table('property', schema.property_table)
+        self.create_table('court_case', schema.court_case)
+        self.create_table('auction', schema.auction_table)
+        self.create_table('party', schema.party)
+        self.create_table('case_party', schema.court_case_party)
+        self.create_table('auction_party', schema.auction_party)
+        self.create_table('no_folio', schema.no_folio)
+        self.create_table('multiple_parcel', schema.multiple_parcel)
     
 
 if __name__ == '__main__':
     
-    main()
+    PostgresHandler().create_databases()

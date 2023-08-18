@@ -68,4 +68,3 @@ class AppraiserScraper(Scraper):
             return True
         else:
             return False
-        
