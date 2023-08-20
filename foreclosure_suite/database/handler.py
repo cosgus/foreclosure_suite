@@ -79,17 +79,24 @@ class DatabaseHandler:
     
     def insert(self,table_name =None , data=None, returning = None):
 
-        if isinstance(data, dict):
-            columns = ', '.join(data.keys())
-            values = ', '.join(['%s'] * len(data))
-            query = f"INSERT INTO {table_name} ({columns}) VALUES ({values})"
-            if returning:
-                query += f" RETURNING {returning}"
-            self.cursor.execute(query, tuple(data.values()))
-            print(f"        {table_name} data inserted successfully.")
-        else:
+        return_var = None
+        if not isinstance(data,dict):
             print("Invalid data format. Only dictionaries are supported for insertion.")
+            return
+     
+        columns = ', '.join(data.keys())
+        values = ', '.join(['%s'] * len(data))
+        query = f"INSERT INTO {table_name} ({columns}) VALUES ({values})"
+        if returning:
+            query += f" RETURNING {returning}"
+            self.cursor.execute(query, tuple(data.values()))
+            return_var = self.cursor.fetchone()[0]
+        else:
+            self.cursor.execute(query, tuple(data.values()))
+        print(f"        {table_name} data inserted successfully.")
 
+        if returning:
+            return return_var
     
 class PostgresHandler(DatabaseHandler):
 
@@ -117,11 +124,10 @@ class PostgresHandler(DatabaseHandler):
 
     def insert(self,table_name =None , data=None, returning = None):
         try:
-            super().insert(table_name, data, returning)
-            return True
+            return super().insert(table_name, data, returning)
         except psycopg2.errors.UniqueViolation:
             self.conn.rollback()
-            return False
+            raise ValueError('Attempted to insert already inserted data')
 
     def drop_all_tables(self):
         tables = self.get_tables()
@@ -169,16 +175,25 @@ class ForeclosureHandler:
         if self.aid != data['aid']:
             self.set_data(data)
         
-        self.pk['property'] = self.handler.insert('property', self.property_info)
-    
+        self.pk['property'] = self.handler.insert('property', self.property_info, returning = 'id')
+        print(f'        Property Primary key: {self.pk["property"]}')
+
+        self.handler.conn.commit()
         case_data = self.create_case_data()
-        self.pk['case'] = self.handler.insert('court_case', case_data)
+        self.pk['case'] = self.handler.insert('court_case', case_data, returning = 'id')
+        print(f'        Case primary key: {self.pk["case"]}')
 
         party_data = self.create_party_data()
-        self.pk['party'] = self.handler.insert('party', party_data)
+        self.pk['party'] = self.handler.insert('party', party_data, returning = 'id')
 
         auction_data = self.create_auction_data()
-        self.pk['auction'] = self.handler.insert('auction', auction_data)
+        auction_data.update({'aid': data['aid']})
+        auction_data.update({'auction_count_on_day': len(data['aid_list'])})
+        auction_data.update({'place_in_line': data['aid_list'].index(data['aid'])})
+        auction_data.update({'property_id': self.pk['property']})
+        auction_data.update({'case_id': self.pk['case']})
+        self.pk['auction'] = self.handler.insert('auction', auction_data, returning = 'id')
+        print(f'        Auction primary key: {self.pk["auction"]}')
 
         court_case_party = {
             'party_id': self.pk['party'],

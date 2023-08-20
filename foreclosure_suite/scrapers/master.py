@@ -42,14 +42,16 @@ class Master:
                     'property_info': property_info,
                     'docket_count': docket_count
                 }
+           
                 self.db_handler.handle_data(data)
                 
-                if idx % 10 == 0:
-                    self.db_handler.conn.commit()
+                if idx % 10 and idx > 0 == 0:
+                    self.db_handler.handler.conn.commit()
 def main():
 
     master = Master()
-    dates = [datetime.now() - timedelta(n) for n in range(10)]
+    sample_date = datetime(2023,8,16)
+    dates = [sample_date]
     master.scrape_all(dates)
 
 

@@ -9,10 +9,12 @@ import requests
 
 from bs4 import BeautifulSoup
 
+import utils
 from foreclosure_suite.scrapers.payloads import foreclosure_payloads
 from foreclosure_suite.scrapers.base import Scraper
 from foreclosure_suite.scrapers.urls import foreclosure_urls
 from foreclosure_suite.scrapers.helpers import MyAdapter
+
 
 class ForeclosureScraper(Scraper):
     """
@@ -151,6 +153,8 @@ class ForeclosureParser:
         for detail in auction_details:
             key = detail.find('th', class_='bLab').text.lower().replace(' ', '_').replace(':','').replace('_(count)','')
             value = detail.find('td', class_='bDat').text
+            if key in ['final_judgment_amount', 'assessed_value', 'plaintiff_max_bid']:
+                value = utils.convert_currency_to_float(value)
             data.update({key: value})
 
         legal_soup = soup.find(id = "mgTab1")
@@ -190,11 +194,13 @@ class ForeclosureParser:
         if sold_to:
             data.update({'status': sold_to})
             data.update({'time':  b_entry})
-            data.update({'sale_amount': auction_item['D']})
+            sale_amount = utils.convert_currency_to_float(auction_item['D'])
+            data.update({'sale_amount': sale_amount})
         else:
             data.update({'status': b_entry})
 
-        data.update({'plaintiff_max_bid': auction_item['P']})
+        plaintiff_max_bid = utils.convert_currency_to_float(auction_item['P'])
+        data.update({'plaintiff_max_bid': plaintiff_max_bid})
 
         return data
 
