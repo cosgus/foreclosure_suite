@@ -90,6 +90,9 @@ class Postgres:
 
     property_table = """
         id SERIAL PRIMARY KEY,
+        Address VARCHAR(255),
+        City VARCHAR(255),
+        Zip VARCHAR(255),
         BathroomCount INT,
         BedroomCount INT,
         BuildingActualArea INT,

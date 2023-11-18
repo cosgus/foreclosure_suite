@@ -27,10 +27,13 @@ class Master:
             for idx, auction_id in enumerate(auction_id_list):
                 print('    ' + auction_id)
                 auction_data = self.foreclosure_scraper.get_all_auction_data(auction_id)
+                if not auction_data['parcel_id']:
+                    self.db_handler.handler.insert('no_folio', {'auction_id': auction_id})
+                    continue
                 print('      Extracted auction data')
                 parcel_id = auction_data['parcel_id']
                 self.appraiser_scraper.set_parcel_id(parcel_id)
-                property_info = self.appraiser_scraper.get_property_info()
+                property_info = self.appraiser_scraper.get_all_appraisers_data()
                 print('      Extracted property info data')
 
                 case_number = auction_data['case_number']

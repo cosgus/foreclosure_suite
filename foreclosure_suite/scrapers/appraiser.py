@@ -60,6 +60,11 @@ class AppraiserScraper(Scraper):
     
     def get_site_address(self) -> dict:
         return self.get_appraisers_json()['SiteAddress']
+    
+    def get_all_appraisers_data(self) -> dict:
+        property_info = self.get_property_info()
+        site_address = self.get_site_address()
+        return {**site_address[0], **property_info}
 
     def set_parcel_id(self, parcel_id:str = None) -> None:
         """

@@ -176,7 +176,8 @@ class ForeclosureHandler:
             self.set_data(data)
         
         try:
-            self.pk['property'] = self.handler.insert('property', self.property_info, returning = 'id')
+            property_data = self.create_property_data()
+            self.pk['property'] = self.handler.insert('property', property_data, returning = 'id')
             print(self.property_info)
         except ValueError as e:
             print(e)
@@ -231,6 +232,25 @@ class ForeclosureHandler:
                 'side': 'defendant'
                 })
         return party_data
+    
+    def create_property_data(self):
+        property_data = self.property_info.copy()
+        remove_keys =[
+            'BuildingNumber',
+            'HouseNumberSuffix',
+            'Message',
+            'StreetName',
+            'StreetNumber',
+            'StreetPrefix',
+            'StreetSuffix',
+            'StreetSuffixDirection',
+            'Unit'
+        ]
+        for key in remove_keys:
+            if key in property_data.keys():
+                property_data.pop(key)
+
+        return property_data
     
     def create_auction_data(self):
         auction_data = self.auction_data.copy()
