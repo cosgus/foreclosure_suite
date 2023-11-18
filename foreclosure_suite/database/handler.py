@@ -132,7 +132,6 @@ class PostgresHandler(DatabaseHandler):
     def drop_all_tables(self):
         tables = self.get_tables()
         for table in tables:
-            print(f'dropping {table}')
             self.cursor.execute(f'DROP TABLE {table[0]} CASCADE;')
         self.conn.commit()
 
@@ -175,13 +174,9 @@ class ForeclosureHandler:
         if self.aid != data['aid']:
             self.set_data(data)
         
-        try:
-            property_data = self.create_property_data()
-            self.pk['property'] = self.handler.insert('property', property_data, returning = 'id')
-            print(self.property_info)
-        except ValueError as e:
-            print(e)
-            print(self.property_info)
+        property_data = self.create_property_data()
+        self.pk['property'] = self.handler.insert('property', property_data, returning = 'id')
+    
         print(f'        Property Primary key: {self.pk["property"]}')
 
         case_data = self.create_case_data()
@@ -255,8 +250,6 @@ class ForeclosureHandler:
     def create_auction_data(self):
         auction_data = self.auction_data.copy()
 
-        for key, value in auction_data.items():
-            print(key,value)
         remove_keys = [
             'count_description',
             'parcel_id',
@@ -270,15 +263,7 @@ class ForeclosureHandler:
         for key in remove_keys:
             if key in auction_data.keys():
                 auction_data.pop(key)
-        # auction_data.pop('count_description')
-        # auction_data.pop('parcel_id')
-        # auction_data.pop('case_number')
-        # auction_data.pop('property_address')
-        # auction_data.pop('assessed_value')
-        # auction_data.pop('property_appraiser_legal_description')
-        # auction_data.pop('defendant')
-        # auction_data.pop('plaintiff')
-        
+
         try:
             auction_data.update({'time': self.auction_data['time'][11:16]})
             auction_data.update({'date': self.auction_data['time'][:10]})
