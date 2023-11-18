@@ -16,12 +16,16 @@ class Scraper:
         self.session = requests
         self.payloads = base_payloads
 
-    def post(self,url:str, payload:dict = None) -> requests.Response:
+    def post(self,url:str, payload:dict = None, **args) -> requests.Response:
         """
         Uses session method to post. User can still access
         self.session but this method automates the headers argument
         """
-        res = self.session.post(url, data = payload, headers = self.payloads.headers, timeout = 10)
+        try:
+            timeout = args['timeout']
+        except KeyError:
+            timeout = 10
+        res = self.session.post(url, data = payload, headers = self.payloads.headers, timeout = timeout)
         return res
 
     def get(self, url:str, headers:dict = None) -> requests.Response:

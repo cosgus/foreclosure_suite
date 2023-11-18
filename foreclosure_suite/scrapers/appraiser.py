@@ -2,6 +2,7 @@
 Scraper class built scraping for Miami-Dade appraisers office
 """
 import requests
+import ast
 
 from foreclosure_suite.scrapers.base import Scraper
 from foreclosure_suite.scrapers.urls import appraiser_urls
@@ -38,6 +39,7 @@ class AppraiserScraper(Scraper):
             return self.json 
         
         self.json = self.get_appraisers().json()
+        self.clean_json()
         self.loaded_parcel_id = self.parcel_id
         return self.json
     
@@ -55,6 +57,9 @@ class AppraiserScraper(Scraper):
     
     def get_extra_features(self) -> dict:
         return self.get_appraisers_json()['ExtraFeature']['ExtraFeatureInfos']
+    
+    def get_site_address(self) -> dict:
+        return self.get_appraisers_json()['SiteAddress']
 
     def set_parcel_id(self, parcel_id:str = None) -> None:
         """
@@ -63,6 +68,10 @@ class AppraiserScraper(Scraper):
         self.parcel_id = parcel_id
         self.urls.set_appraiser_url(parcel_id.replace('-',''))
 
+    def clean_json(self):
+        json_string = str(self.json)
+        self.json = ast.literal_eval(json_string.replace('\\x00', ''))
+        
     def is_loaded(self) -> bool:
         if self.loaded_parcel_id == self.parcel_id:
             return True

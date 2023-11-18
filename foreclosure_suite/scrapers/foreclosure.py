@@ -180,10 +180,10 @@ class ForeclosureParser:
         """
 
         data = {
-            'status': '',
-            'time': '',
-            'sale_amount': '',
-            'plaintiff_max_bid': '',
+            'status': None,
+            'time': None,
+            'sale_amount': None,
+            'plaintiff_max_bid': None,
         }
 
         auction_data = json_response['ADATA']
@@ -199,7 +199,11 @@ class ForeclosureParser:
         else:
             data.update({'status': b_entry})
 
-        plaintiff_max_bid = utils.convert_currency_to_float(auction_item['P'])
+        try:
+            plaintiff_max_bid = utils.convert_currency_to_float(auction_item['P'])
+        except ValueError:
+            plaintiff_max_bid = 0
+            
         data.update({'plaintiff_max_bid': plaintiff_max_bid})
 
         return data

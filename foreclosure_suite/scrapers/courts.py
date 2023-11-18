@@ -35,7 +35,7 @@ class CourtScraper(Scraper):
         """
         if case_number:
             self.ready_search(case_number)
-        html_content = self.post(self.urls.search_url, self.payloads.court_form).text
+        html_content = self.post(self.urls.search_url, self.payloads.court_form, timeout = 30).text
         return self.parser.extract_docket_count(html_content)
 
     def login(self) -> requests.Response:

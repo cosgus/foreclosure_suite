@@ -14,7 +14,7 @@ class Master:
         self.appraiser_scraper = AppraiserScraper()
         self.court_scraper = CourtScraper()
         self.db_handler = db_handler.ForeclosureHandler()
-
+        self.db_handler.handler.reset()
 
     def scrape_all(self, dates:List[datetime] = None):
         
@@ -22,17 +22,20 @@ class Master:
             
             print(date.strftime('%Y-%m-%d'))
             auction_id_list = list(filter(None,(self.foreclosure_scraper.get_days_aids(date))))
+            print(f'{len(auction_id_list)} auctions on this date')
             
             for idx, auction_id in enumerate(auction_id_list):
                 print('    ' + auction_id)
                 auction_data = self.foreclosure_scraper.get_all_auction_data(auction_id)
-
+                print('      Extracted auction data')
                 parcel_id = auction_data['parcel_id']
                 self.appraiser_scraper.set_parcel_id(parcel_id)
                 property_info = self.appraiser_scraper.get_property_info()
+                print('      Extracted property info data')
 
                 case_number = auction_data['case_number']
                 docket_count = self.court_scraper.get_docket_count(case_number)
+                print('      Extracted court data')
 
                 data = {
                     'aid': auction_id,
@@ -47,6 +50,8 @@ class Master:
                 
                 if idx % 10 and idx > 0 == 0:
                     self.db_handler.handler.conn.commit()
+
+            self.db_handler.handler.conn.commit()
 def main():
 
     master = Master()

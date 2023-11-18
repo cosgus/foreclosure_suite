@@ -175,10 +175,14 @@ class ForeclosureHandler:
         if self.aid != data['aid']:
             self.set_data(data)
         
-        self.pk['property'] = self.handler.insert('property', self.property_info, returning = 'id')
+        try:
+            self.pk['property'] = self.handler.insert('property', self.property_info, returning = 'id')
+            print(self.property_info)
+        except ValueError as e:
+            print(e)
+            print(self.property_info)
         print(f'        Property Primary key: {self.pk["property"]}')
 
-        self.handler.conn.commit()
         case_data = self.create_case_data()
         self.pk['case'] = self.handler.insert('court_case', case_data, returning = 'id')
         print(f'        Case primary key: {self.pk["case"]}')
@@ -230,17 +234,38 @@ class ForeclosureHandler:
     
     def create_auction_data(self):
         auction_data = self.auction_data.copy()
-        auction_data.pop('count_description')
-        auction_data.pop('parcel_id')
-        auction_data.pop('case_number')
-        auction_data.pop('property_address')
-        auction_data.pop('assessed_value')
-        auction_data.pop('property_appraiser_legal_description')
-        auction_data.pop('defendant')
-        auction_data.pop('plaintiff')
+
+        for key, value in auction_data.items():
+            print(key,value)
+        remove_keys = [
+            'count_description',
+            'parcel_id',
+            'case_number',
+            'property_address',
+            'assessed_value',
+            'property_appraiser_legal_description',
+            'defendant',
+            'plaintiff'
+                       ]
+        for key in remove_keys:
+            if key in auction_data.keys():
+                auction_data.pop(key)
+        # auction_data.pop('count_description')
+        # auction_data.pop('parcel_id')
+        # auction_data.pop('case_number')
+        # auction_data.pop('property_address')
+        # auction_data.pop('assessed_value')
+        # auction_data.pop('property_appraiser_legal_description')
+        # auction_data.pop('defendant')
+        # auction_data.pop('plaintiff')
         
-        auction_data.update({'time': self.auction_data['time'][11:16]})
-        auction_data.update({'date': self.auction_data['time'][:10]})
+        try:
+            auction_data.update({'time': self.auction_data['time'][11:16]})
+            auction_data.update({'date': self.auction_data['time'][:10]})
+        except TypeError:
+            auction_data.update({'time': None})
+            auction_data.update({'date': None})
+
         auction_data.update({'property_id':self.pk['property']})
         auction_data.update({'case_id': self.pk['case']})
 
