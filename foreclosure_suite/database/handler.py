@@ -184,7 +184,16 @@ class ForeclosureHandler:
         print(f'        Case primary key: {self.pk["case"]}')
 
         party_data = self.create_party_data()
-        self.pk['party'] = self.handler.insert('party', party_data, returning = 'id')
+        
+        for party_name , side in party_data.items():
+            entry = {'party_name': party_name, 'side': side}
+            self.pk['party'] = self.handler.insert('party', entry, returning = 'id')
+
+            court_case_party = {
+                'party_id': self.pk['party'],
+                'case_id': self.pk['case']
+             }
+            self.handler.insert('case_party', court_case_party)
 
         auction_data = self.create_auction_data()
         auction_data.update({'aid': data['aid']})
@@ -195,11 +204,7 @@ class ForeclosureHandler:
         self.pk['auction'] = self.handler.insert('auction', auction_data, returning = 'id')
         print(f'        Auction primary key: {self.pk["auction"]}')
 
-        court_case_party = {
-            'party_id': self.pk['party'],
-            'case_id': self.pk['case']
-        }
-        self.handler.insert('case_party', court_case_party)
+
 
         auction_party = {
             'party_id': self.pk['party'],
@@ -218,13 +223,11 @@ class ForeclosureHandler:
         party_data = {}
         for plaintiff in self.auction_data['plaintiff']:
             party_data.update({
-                'party_name': plaintiff,
-                'side': 'plaintiff'
+                plaintiff: 'plaintiff'
                 })
         for defendant in self.auction_data['defendant']:
             party_data.update({
-                'party_name': defendant,
-                'side': 'defendant'
+                defendant: 'defendant'
                 })
         return party_data
     
