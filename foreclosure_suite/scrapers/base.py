@@ -27,7 +27,7 @@ class Scraper:
             args.pop('headers')
         self.logger.debug(f'Req: GET to {url}, params={json.dumps(payload, indent=4)}')
         res = self.session.post(url, data = payload, headers = self.payloads.headers, **args)
-        self.logger.debug(f'Req: GET response: {res}, content={res.text}')
+        self.logger.debug(f'Req: GET response: {res},')
         
         return res
 
