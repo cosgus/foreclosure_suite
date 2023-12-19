@@ -8,7 +8,7 @@ from foreclosure_suite.database.my_alchemy import session, engine
 
 Model = declarative_base()
 Model.query = session.query_property()
-
+print(__name__)
 class Table(enum.Enum):
 
     SCRAPED             = 'dates_scraped'
@@ -21,7 +21,7 @@ class TimeStampedModel(Model):
     __abstract__ = True
 
     created_at = Column(DateTime, default=datetime.utcnow())
-    updated_it = Column(DateTime, onupdate=datetime.utcnow())
+    updated_at = Column(DateTime, onupdate=datetime.utcnow())
 
 class DataLake(TimeStampedModel):
     __abstract__ = True

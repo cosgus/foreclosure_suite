@@ -129,6 +129,7 @@ class ForeclosureParser:
         """
         soup = BeautifulSoup(html_content, 'html.parser')
         aids = soup.find(id = 'ALB').text.split(',')
+        aids = [aid for aid in aids if aid != '']
         return aids
 
     def extract_days_page_count(self, html_content:str) -> int:
