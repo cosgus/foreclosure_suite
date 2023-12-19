@@ -3,8 +3,6 @@ Base class for other scrapers
 """
 import requests
 
-from bs4 import BeautifulSoup
-
 from foreclosure_suite.scrapers.payloads import base_payloads
 
 class Scraper:

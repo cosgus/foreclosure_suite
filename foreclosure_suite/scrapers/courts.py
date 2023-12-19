@@ -98,7 +98,7 @@ class CourtScraper(Scraper):
             self.ready_search(case_number)
         return self.post_soup(self.urls.search_url, self.payloads.court_form)
 
-    def post_court(self, case_number:str = None) -> requests.Response:
+    def post_court(self, case_number:str = None, timeout:int = 10) -> requests.Response:
         """
         Post to search_url for a specific case_number.
         By default uses pre-set case_number attribute but optionally can
@@ -106,7 +106,7 @@ class CourtScraper(Scraper):
         """
         if case_number:
             self.ready_search(case_number)
-        return self.post(self.urls.search_url, self.payloads.court_form)
+        return self.post(self.urls.search_url, self.payloads.court_form, timeout=timeout)
         
 
 class CourtParser:

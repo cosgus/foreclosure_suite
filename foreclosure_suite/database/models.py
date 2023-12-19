@@ -4,11 +4,11 @@ import enum
 from sqlalchemy.orm import declarative_base
 from sqlalchemy import Column, DateTime, Integer, JSON, String, Boolean
 
-from foreclosure_suite.database.my_alchemy import session, engine
+from foreclosure_suite.database.config import session, engine
 
 Model = declarative_base()
 Model.query = session.query_property()
-print(__name__)
+
 class Table(enum.Enum):
 
     SCRAPED             = 'dates_scraped'

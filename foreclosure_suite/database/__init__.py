@@ -1,1 +1,1 @@
-from . import my_alchemy
+from . import config

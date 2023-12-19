@@ -1,17 +1,17 @@
-import logging
 from datetime import datetime
 
 from sqlalchemy import func
 
 from foreclosure_suite.database import models
-from foreclosure_suite.database.my_alchemy import session, engine
+from foreclosure_suite.database.config import session, engine
 from foreclosure_suite import scrapers
 from utils import daterange
 
+BATCH_SIZE = 100
 
 class DataSeed:
 
-    def __init__(self, alchemy_session):
+    def __init__(self, alchemy_session = session):
 
         self.session = alchemy_session
         self.tables = models.Table
@@ -28,8 +28,9 @@ class DataSeed:
         for single_date in daterange(self.start_date, datetime.now()):
             aids_list = self.foreclosure_scraper.get_days_aids(single_date)
             print(single_date)
-            for aid in aids_list:
+            for idx, aid in enumerate(aids_list):
 
+                print(f'     {idx} - {aid}')
                 aid_data = self.handle_auction(aid)
                 auction_data = self.foreclosure_scraper.parser.extract_auction_property_data(aid_data['html'])
 
@@ -43,7 +44,7 @@ class DataSeed:
                     self.handle_court(case_number)
 
                 batched += 1
-                if batched % 100 == 0:
+                if batched % BATCH_SIZE == 0:
                     self.session.commit()
             self.session.add(models.Scraped(date = single_date))
         self.session.commit()
@@ -80,11 +81,10 @@ class DataSeed:
     def create_court_data(self, case_number):
         return {
             'case_number': case_number,
-            'html': self.court_scraper.post_court(case_number)
+            'html': self.court_scraper.post_court(case_number=case_number, timeout = 30)
         }
     
     def handle_auction(self, aid):
-        print('     '+ aid)
         if not self.exists_in_table(aid, models.AuctionLake):
             aid_data = self.create_aid_data(aid)
             self.session.add(models.AuctionLake(**aid_data))
