@@ -1,9 +1,11 @@
 """
 Base class for other scrapers
 """
+import json
 import requests
 
 from foreclosure_suite.scrapers.payloads import base_payloads
+from ..logger import get_logger
 
 class Scraper:
     """
@@ -13,6 +15,7 @@ class Scraper:
     def __init__(self):
         self.session = requests
         self.payloads = base_payloads
+        self.logger = get_logger(__name__)
 
     def post(self,url:str, payload:dict = None, **args) -> requests.Response:
         """
@@ -23,7 +26,10 @@ class Scraper:
             timeout = args['timeout']
         except KeyError:
             timeout = 10
+        self.logger.debug(f'Req: GET to {url}, params={json.dumps(payload, indent=4)}')
         res = self.session.post(url, data = payload, headers = self.payloads.headers, timeout = timeout)
+        self.logger.debug(f'Req: GET response: {res}, content={res.text}')
+        
         return res
 
     def get(self, url:str, headers:dict = None) -> requests.Response:
