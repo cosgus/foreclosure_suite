@@ -22,24 +22,13 @@ class Scraper:
         Uses session method to post. User can still access
         self.session but this method automates the headers argument
         """
-<<<<<<< HEAD
         if 'headers' in args.keys():
             self.set_request_headers(args['headers'])
             args.pop('headers')
-        res = self.session.post(url, data = payload, headers = self.payloads.headers, **args)
-=======
-        try:
-            timeout = args['timeout']
-        except KeyError:
-            timeout = 10
         self.logger.debug(f'Req: GET to {url}, params={json.dumps(payload, indent=4)}')
-        res = self.session.post(url, data = payload, headers = self.payloads.headers, timeout = timeout)
+        res = self.session.post(url, data = payload, headers = self.payloads.headers, **args)
         self.logger.debug(f'Req: GET response: {res}, content={res.text}')
         
-<<<<<<< HEAD
->>>>>>> adding logger
-=======
->>>>>>> 85a709a9764956cda7a03a5bed39e7b800316436
         return res
 
     def get(self, url:str, headers:dict = None) -> requests.Response:
