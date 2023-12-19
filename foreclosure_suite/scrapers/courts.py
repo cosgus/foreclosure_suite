@@ -19,7 +19,7 @@ class CourtScraper(Scraper):
     """
     def __init__(self, case_number:str = None) -> None:
         super().__init__()
-        self.session = requests.session()
+        super().session = requests.session()
         self.payloads = court_payloads.CourtPayloads()
         self.urls = court_urls.URLS()
         self.parser = CourtParser()
@@ -46,10 +46,10 @@ class CourtScraper(Scraper):
         3 - Updates cookies in header to include ASPXFORMSAUTH4DADE
         """
         self.set_login_form()
-        res = self.session.post(url = self.urls.login_url,
-                                data = self.payloads.login,
-                                headers = self.payloads.headers,
-                                allow_redirects=False)
+        res = self.post(url = self.urls.login_url,
+                        payload = self.payloads.login,
+                        headers = self.payloads.headers,
+                        allow_redirects=False)
         new_cookie = '; .ASPXFORMSAUTH4DADE=' + res.cookies.get(".ASPXFORMSAUTH4DADE")
         self.payloads.headers.update({'Cookie': self.payloads.headers['Cookie'] + new_cookie})
         return res
