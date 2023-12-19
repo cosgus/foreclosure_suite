@@ -2,7 +2,7 @@ from datetime import datetime
 import enum
 
 from sqlalchemy.orm import declarative_base
-from sqlalchemy import Column, DateTime, Integer, JSON, String, Boolean
+from sqlalchemy import Column, DateTime, Integer, JSON, String, Boolean, BigInteger
 
 from foreclosure_suite.database.config import session, engine
 
@@ -47,7 +47,7 @@ class AuctionLake(DataLake):
 class AppraiserLake(DataLake):
     __tablename__ = 'appraiser_raw_data'
 
-    id = Column(Integer, primary_key = True)
+    id = Column(BigInteger, primary_key = True)
     json = Column(JSON)
 
     def __repr__(self):
