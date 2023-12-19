@@ -36,7 +36,10 @@ class Scraper:
         res = self.session.post(url, data = payload, headers = self.payloads.headers, timeout = timeout)
         self.logger.debug(f'Req: GET response: {res}, content={res.text}')
         
+<<<<<<< HEAD
 >>>>>>> adding logger
+=======
+>>>>>>> 85a709a9764956cda7a03a5bed39e7b800316436
         return res
 
     def get(self, url:str, headers:dict = None) -> requests.Response:
