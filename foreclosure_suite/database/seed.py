@@ -86,7 +86,7 @@ class DataSeed:
     def create_court_data(self, case_number):
         return {
             'case_number': case_number,
-            'html': self.court_scraper.post_court(case_number=case_number, timeout = 30)
+            'html': self.court_scraper.post_court(case_number=case_number, timeout = 30).text
         }
     
     def handle_auction(self, aid):
