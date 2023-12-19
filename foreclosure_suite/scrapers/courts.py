@@ -19,7 +19,7 @@ class CourtScraper(Scraper):
     """
     def __init__(self, case_number:str = None) -> None:
         super().__init__()
-        super().session = requests.session()
+        self.session = requests.session()
         self.payloads = court_payloads.CourtPayloads()
         self.urls = court_urls.URLS()
         self.parser = CourtParser()

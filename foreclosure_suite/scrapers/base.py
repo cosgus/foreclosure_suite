@@ -22,7 +22,6 @@ class Scraper:
         if 'headers' in args.keys():
             self.set_request_headers(args['headers'])
             args.pop('headers')
-            print(self.payloads.headers)
         res = self.session.post(url, data = payload, headers = self.payloads.headers, **args)
         return res
 
