@@ -9,7 +9,7 @@ import requests
 
 from bs4 import BeautifulSoup
 
-import utils
+from foreclosure_suite.utils import convert_currency_to_float
 from foreclosure_suite.scrapers.payloads import foreclosure_payloads
 from foreclosure_suite.scrapers.base import Scraper
 from foreclosure_suite.scrapers.urls import foreclosure_urls
@@ -155,7 +155,7 @@ class ForeclosureParser:
             key = detail.find('th', class_='bLab').text.lower().replace(' ', '_').replace(':','').replace('_(count)','')
             value = detail.find('td', class_='bDat').text
             if key in ['final_judgment_amount', 'assessed_value', 'plaintiff_max_bid']:
-                value = utils.convert_currency_to_float(value)
+                value = convert_currency_to_float(value)
             data.update({key: value})
 
         legal_soup = soup.find(id = "mgTab1")
@@ -195,13 +195,13 @@ class ForeclosureParser:
         if sold_to:
             data.update({'status': sold_to})
             data.update({'time':  b_entry})
-            sale_amount = utils.convert_currency_to_float(auction_item['D'])
+            sale_amount = convert_currency_to_float(auction_item['D'])
             data.update({'sale_amount': sale_amount})
         else:
             data.update({'status': b_entry})
 
         try:
-            plaintiff_max_bid = utils.convert_currency_to_float(auction_item['P'])
+            plaintiff_max_bid = convert_currency_to_float(auction_item['P'])
         except ValueError:
             plaintiff_max_bid = 0
             

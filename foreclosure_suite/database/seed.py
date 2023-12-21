@@ -7,7 +7,7 @@ from foreclosure_suite.database.models import AppraiserLake, AuctionLake, CourtL
 from foreclosure_suite.database.config import session, engine
 from foreclosure_suite.scrapers import ForeclosureScraper, AppraiserScraper, CourtScraper
 from foreclosure_suite.logger import get_logger
-from utils import daterange, convert_folio_to_int, load_config
+from foreclosure_suite.utils import daterange, convert_folio_to_int, load_config
 
 BATCH_SIZE = load_config()['batch_size']
 
