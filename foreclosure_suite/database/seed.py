@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 import json
 
 from sqlalchemy import func
@@ -62,9 +62,11 @@ class DataSeed:
     
     def get_start_date(self) -> datetime:
 
-        start_date = self.session.query(func.max(Scraped.date)).scalar()
-        if not start_date: 
+        most_recent_date_scraped = self.session.query(func.max(Scraped.date)).scalar()
+        if not most_recent_date_scraped: 
             start_date = datetime(2010,1,11)
+        else:
+            start_date = most_recent_date_scraped + timedelta(days = 1)
         return start_date
 
     def create_aid_data(self, aid):
