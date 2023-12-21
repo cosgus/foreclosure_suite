@@ -7,9 +7,9 @@ from foreclosure_suite.database.models import AppraiserLake, AuctionLake, CourtL
 from foreclosure_suite.database.config import session, engine
 from foreclosure_suite import scrapers
 from foreclosure_suite.logger import get_logger
-from utils import daterange, convert_folio_to_int
+from utils import daterange, convert_folio_to_int, load_config
 
-BATCH_SIZE = 100
+BATCH_SIZE = load_config()['batch_size']
 
 class DataSeed:
 
