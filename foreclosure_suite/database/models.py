@@ -39,7 +39,7 @@ class ModelMixin(Model):
         if session.query(cls).filter_by(**kwargs).first():
             logger.debug(f'{cls} - Already Inserted')
             return True
-        pending = [entry for entry in session.new]
+        
 class DataLake(ModelMixin):
     __abstract__ = True
 
