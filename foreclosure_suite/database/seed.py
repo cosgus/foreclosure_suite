@@ -9,7 +9,7 @@ from foreclosure_suite.scrapers import ForeclosureScraper, AppraiserScraper, Cou
 from foreclosure_suite.logger import get_logger
 from utils import daterange, convert_folio_to_int
 
-BATCH_SIZE = 1
+BATCH_SIZE = 100
 
 class DataSeed:
 
