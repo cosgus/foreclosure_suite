@@ -5,7 +5,7 @@ import json
 import requests
 
 from foreclosure_suite.scrapers.payloads import base_payloads
-from ..logger import get_logger
+from foreclosure_suite.logger import get_logger
 
 class Scraper:
     """

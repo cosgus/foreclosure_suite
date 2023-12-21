@@ -4,7 +4,7 @@ from sqlalchemy import func
 
 from foreclosure_suite.database import models
 from foreclosure_suite.database.config import session, engine
-from foreclosure_suite import scrapers
+from foreclosure_suite.scrapers import ForeclosureScraper, AppraiserScraper, CourtScraper
 from foreclosure_suite.logger import get_logger
 from utils import daterange
 
@@ -18,9 +18,9 @@ class DataSeed:
         self.tables = models.Table
         self.start_date = self.get_start_date()
 
-        self.foreclosure_scraper = scrapers.foreclosure.ForeclosureScraper()
-        self.appraiser_scraper = scrapers.appraiser.AppraiserScraper()
-        self.court_scraper = scrapers.courts.CourtScraper()
+        self.foreclosure_scraper = ForeclosureScraper()
+        self.appraiser_scraper = AppraiserScraper()
+        self.court_scraper = CourtScraper()
 
         self.logger = get_logger(__name__)
 
