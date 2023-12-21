@@ -28,6 +28,7 @@ class DataSeed:
     def seed_data(self):
 
         batched = 0
+        already_added = []
         
         for single_date in daterange(self.start_date, datetime.now()):
             aids_list = self.foreclosure_scraper.get_days_aids(single_date)
@@ -41,17 +42,20 @@ class DataSeed:
                 parcel_id = auction_data['parcel_id']
                 case_number = auction_data['case_number']
                 
-                if parcel_id:
+                if parcel_id and parcel_id not in already_added:
                     self.logger.info(f'         {parcel_id}')
                     self.handle_appraiser(parcel_id)
+                    already_added.append(parcel_id)
 
-                if case_number:
+                if case_number and case_number not in already_added:
                     self.logger.info(f'         {case_number}')
                     self.handle_court(case_number)
+                    already_added.append(case_number)
 
                 batched += 1
                 if batched % BATCH_SIZE == 0:
                     self.session.commit()
+                    already_added = []
             self.session.add(Scraped(date = single_date))
         self.session.commit()
 
