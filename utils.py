@@ -8,3 +8,6 @@ def daterange(start_date: datetime, end_date: datetime):
 def convert_currency_to_float(currency:str) -> float:
     currency = currency.replace('$','').replace(',','')
     return float(currency)
+
+def convert_folio_to_int(parcel_id:str) -> int:
+    return int(parcel_id.replace('-',''))
