@@ -43,9 +43,12 @@ class DataSeed:
                 case_number = auction_data['case_number']
                 
                 if parcel_id and parcel_id not in already_added:
-                    self.logger.info(f'         {parcel_id}')
-                    self.handle_appraiser(parcel_id)
-                    already_added.append(parcel_id)
+                    if parcel_id == 'MULTPLE PARCELS':
+                        self.handle_multiple_parcel()
+                    else:
+                        self.logger.info(f'         {parcel_id}')
+                        self.handle_appraiser(parcel_id)
+                        already_added.append(parcel_id)
 
                 if case_number and case_number not in already_added:
                     self.logger.info(f'         {case_number}')
@@ -115,6 +118,9 @@ class DataSeed:
             court_data = self.create_court_data(case_number)
             entry = CourtLake(**court_data)
             self.session.add(entry)
+    
+    def handle_multiple_parcel(self):
+        pass
 
 def drop_all_tables():
     AppraiserLake.__table__.drop(bind = engine)
