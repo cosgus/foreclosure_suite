@@ -1,5 +1,7 @@
 import json
 from datetime import datetime, timedelta
+from requests.exceptions import ConnectionError
+from time import sleep
 
 from fuzzywuzzy import fuzz
 from sqlalchemy import func
@@ -133,5 +135,10 @@ if __name__ == '__main__':
     drop_all_tables()
     Model.metadata.create_all(bind=engine)
     seeder = DataSeed(session)
-    seeder.seed_data()
-    
+    while True:
+        try:
+            seeder.seed_data()
+        except ConnectionError as e:
+            seeder.logger.warning(f'CONNECTION ERROR - RESTARTING SEEDER\n{e}')
+            sleep(30)
+            seeder.seed_data()
