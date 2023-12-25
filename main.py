@@ -8,7 +8,7 @@ from foreclosure_suite.logger import get_logger
 
 def main():
     
-    logger = get_logger
+    logger = get_logger(__name__)
     models.Model.metadata.create_all(bind = engine)
     seeder = DataSeed()
     while True:
