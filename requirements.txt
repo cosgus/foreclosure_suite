@@ -5,6 +5,7 @@ charset-normalizer==3.3.2
 fuzzywuzzy==0.18.0
 greenlet==3.0.2
 idna==3.6
+Levenshtein==0.23.0
 mysql-connector-python==8.2.0
 numpy==1.24.4
 pandas==2.0.3
@@ -12,8 +13,10 @@ protobuf==4.21.12
 psycopg2-binary==2.9.9
 python-dateutil==2.8.2
 python-dotenv==1.0.0
+python-Levenshtein==0.23.0
 pytz==2023.3.post1
 PyYAML==6.0.1
+rapidfuzz==3.5.2
 requests==2.31.0
 six==1.16.0
 soupsieve==2.5
