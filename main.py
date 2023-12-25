@@ -4,7 +4,7 @@ from time import sleep
 from foreclosure_suite.database.seed import DataSeed
 from foreclosure_suite.database import models
 from foreclosure_suite.database.config import engine
-from foreclosure_suite.utils import get_logger
+from foreclosure_suite.logger import get_logger
 
 def main():
     
