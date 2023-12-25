@@ -1,6 +1,7 @@
-from datetime import datetime, timedelta
 import json
+from datetime import datetime, timedelta
 
+from fuzzywuzzy import fuzz
 from sqlalchemy import func
 
 from foreclosure_suite.database.models import AppraiserLake, AuctionLake, CourtLake, Scraped, Table, Model
@@ -43,7 +44,7 @@ class DataSeed:
                 case_number = auction_data['case_number']
                 
                 if parcel_id and parcel_id not in already_added:
-                    if parcel_id == 'MULTPLE PARCELS':
+                    if fuzz.ratio(parcel_id, 'MULTIPLE PARCELS') > 75:
                         self.handle_multiple_parcel()
                     else:
                         self.logger.info(f'         {parcel_id}')
