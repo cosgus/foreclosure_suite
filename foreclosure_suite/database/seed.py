@@ -42,16 +42,14 @@ class DataSeed:
                 aid_data = self.handle_auction(aid)
                 auction_data = self.foreclosure_scraper.parser.extract_auction_property_data(aid_data.html)
 
-                parcel_id = auction_data['parcel_id']
+                parcel_id = self.validate_parcel_id(auction_data['parcel_id'])
                 case_number = auction_data['case_number']
                 
                 if parcel_id and parcel_id not in already_added:
-                    if fuzz.ratio(parcel_id, 'MULTIPLE PARCELS') > 75:
-                        self.handle_multiple_parcel()
-                    else:
-                        self.logger.info(f'         {parcel_id}')
-                        self.handle_appraiser(parcel_id)
-                        already_added.append(parcel_id)
+                    self.logger.info(f'         {parcel_id}')
+                    self.handle_appraiser(parcel_id)
+                    already_added.append(parcel_id)
+                   
 
                 if case_number and case_number not in already_added:
                     self.logger.info(f'         {case_number}')
@@ -79,6 +77,16 @@ class DataSeed:
             start_date = most_recent_date_scraped + timedelta(days = 1)
         return start_date
 
+    def validate_parcel_id(self, parcel_id):
+        try:
+            convert_folio_to_int(parcel_id=parcel_id)
+            if fuzz.token_set_ratio(parcel_id, 'MULTIPLE PARCEL') > 75:
+                return None
+            else:
+                return parcel_id
+        except ValueError:
+            return None
+        
     def create_aid_data(self, aid):
         aid_data = {
             'id': int(aid),
