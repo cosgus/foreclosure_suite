@@ -16,11 +16,13 @@ BATCH_SIZE = load_config()['batch_size']
 
 class DataHandler:
 
-    def __init__(self):
+    def __init__(self, alchemy_session = session):
 
         self.foreclosure_scraper = ForeclosureScraper()
         self.appraiser_scraper = AppraiserScraper()
         self.court_scraper = CourtScraper()
+
+        self.session = alchemy_session
 
     def create_aid_data(self, aid):
         aid_data = {
@@ -53,6 +55,7 @@ class DataHandler:
         
 
     def handle_appraiser(self, parcel_id):
+        if parcel_id:
         context_id = convert_folio_to_int(parcel_id)
         if not AppraiserLake.exists_in_table(self.session, id = context_id):
             appraiser_data = self.create_appraiser_data(parcel_id)
@@ -73,7 +76,7 @@ class DataSeed(DataHandler):
 
     def __init__(self, alchemy_session = session):
 
-        super().__init__()
+        super().__init__(alchemy_session)
         self.session = alchemy_session
         self.start_date = self.get_start_date()
 
@@ -96,6 +99,7 @@ class DataSeed(DataHandler):
                 parcel_id = self.validate_parcel_id(auction_data['parcel_id'])
                 case_number = auction_data['case_number']
                 
+                self.handle_appraiser(parcel_id)
                 if parcel_id and parcel_id not in already_added:
                     self.logger.info(f'         {parcel_id}')
                     self.handle_appraiser(parcel_id)
