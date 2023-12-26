@@ -14,10 +14,11 @@ logger = get_logger(__name__)
 
 class Table(enum.Enum):
 
-    SCRAPED             = 'dates_scraped'
-    AUCTION_RAW_DATA    = 'auction_raw_data'
-    COURT_RAW_DATA      = 'court_raw_data'
-    APPRAISER_RAW_DATA  = 'appraiser_raw_data'
+    SCRAPED                 = 'dates_scraped'
+    AUCTION_RAW_DATA        = 'auction_raw_data'
+    COURT_RAW_DATA          = 'court_raw_data'
+    APPRAISER_RAW_DATA      = 'appraiser_raw_data'
+    AUCTION_DATE_RAW_DATA   = 'auction_date_raw_data'
     
 class ModelMixin(Model):
     __abstract__ = True
@@ -40,18 +41,24 @@ class ModelMixin(Model):
             logger.debug(f'{cls} - Already Inserted')
             return True
 
-class DataLake(ModelMixin):
+class RequestsDataLake(ModelMixin):
     __abstract__ = True
 
+    status_code = Column(Integer)
+    response_headers = Column(JSON)
     parsed = Column(Boolean, default=False)
 
-class Scraped(Model):
-    __tablename__ = 'dates_scraped'
+class AuctionDateLake(RequestsDataLake):
+    __tablename__ = 'auction_date_raw_data'
 
     id = Column(Integer, primary_key = True)
     date = Column(DateTime)
+    html = Column(String)
 
-class AuctionLake(DataLake):
+    def __repr__(self):
+        return f'{self.__class__.name}:, Date: {self.date}'
+
+class AuctionLake(RequestsDataLake):
     __tablename__ ='auction_raw_data'
 
     id = Column(Integer, primary_key = True)
@@ -61,7 +68,7 @@ class AuctionLake(DataLake):
     def __repr__(self):
         return f'{self.__class__.__name__}, AID: {self.id}'
 
-class AppraiserLake(DataLake):
+class AppraiserLake(RequestsDataLake):
     __tablename__ = 'appraiser_raw_data'
 
     id = Column(BigInteger, primary_key = True)
@@ -71,7 +78,7 @@ class AppraiserLake(DataLake):
         return f'{self.__class__.__name__}, Folio: {self.id}'
 
 
-class CourtLake(DataLake):
+class CourtLake(RequestsDataLake):
     __tablename__ = "court_raw_data"
 
     id = Column(Integer, primary_key = True, autoincrement = True)
