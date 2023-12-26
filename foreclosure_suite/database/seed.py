@@ -14,79 +14,14 @@ from foreclosure_suite.utils import daterange, convert_folio_to_int, load_config
 
 BATCH_SIZE = load_config()['batch_size']
 
-class DataSeed:
+class DataHandler:
 
-    def __init__(self, alchemy_session = session):
-
-        self.session = alchemy_session
-        self.tables = Table
-        self.start_date = self.get_start_date()
+    def __init__(self):
 
         self.foreclosure_scraper = ForeclosureScraper()
         self.appraiser_scraper = AppraiserScraper()
         self.court_scraper = CourtScraper()
 
-        self.logger = get_logger(__name__)
-
-    def seed_data(self):
-
-        batched = 0
-        already_added = []
-        
-        for single_date in daterange(self.start_date, datetime.now()):
-            aids_list = self.foreclosure_scraper.get_days_aids(single_date)
-            self.logger.info(single_date)
-            for aid in aids_list:
-
-                self.logger.info(f'     {batched+1} - {aid}')
-                aid_data = self.handle_auction(aid)
-                auction_data = self.foreclosure_scraper.parser.extract_auction_property_data(aid_data.html)
-
-                parcel_id = self.validate_parcel_id(auction_data['parcel_id'])
-                case_number = auction_data['case_number']
-                
-                if parcel_id and parcel_id not in already_added:
-                    self.logger.info(f'         {parcel_id}')
-                    self.handle_appraiser(parcel_id)
-                    already_added.append(parcel_id)
-                   
-
-                if case_number and case_number not in already_added:
-                    self.logger.info(f'         {case_number}')
-                    self.handle_court(case_number)
-                    already_added.append(case_number)
-
-                batched += 1
-                if batched % BATCH_SIZE == 0:
-                    self.session.commit()
-                    already_added = []
-            self.session.add(Scraped(date = single_date))
-        self.session.commit()
-
-    def insert(self, data: Model):
-        if not self.check_if_exists(data):
-            self.session.add(data)
-
-    
-    def get_start_date(self) -> datetime:
-
-        most_recent_date_scraped = self.session.query(func.max(Scraped.date)).scalar()
-        if not most_recent_date_scraped: 
-            start_date = datetime(2010,1,11)
-        else:
-            start_date = most_recent_date_scraped + timedelta(days = 1)
-        return start_date
-
-    def validate_parcel_id(self, parcel_id):
-        try:
-            convert_folio_to_int(parcel_id=parcel_id)
-            if fuzz.token_set_ratio(parcel_id, 'MULTIPLE PARCEL') > 75:
-                return None
-            else:
-                return parcel_id
-        except ValueError:
-            return None
-        
     def create_aid_data(self, aid):
         aid_data = {
             'id': int(aid),
@@ -133,6 +68,75 @@ class DataSeed:
     def handle_multiple_parcel(self):
         pass
 
+
+class DataSeed(DataHandler):
+
+    def __init__(self, alchemy_session = session):
+
+        super().__init__()
+        self.session = alchemy_session
+        self.start_date = self.get_start_date()
+
+        self.logger = get_logger(__name__)
+
+    def seed_data(self):
+
+        batched = 0
+        already_added = []
+        
+        for single_date in daterange(self.start_date, datetime.now()):
+            aids_list = self.foreclosure_scraper.get_days_aids(single_date)
+            self.logger.info(single_date)
+            for aid in aids_list:
+
+                self.logger.info(f'     {batched+1} - {aid}')
+                aid_data = self.handle_auction(aid)
+                auction_data = self.foreclosure_scraper.parser.extract_auction_property_data(aid_data.html)
+
+                parcel_id = self.validate_parcel_id(auction_data['parcel_id'])
+                case_number = auction_data['case_number']
+                
+                if parcel_id and parcel_id not in already_added:
+                    self.logger.info(f'         {parcel_id}')
+                    self.handle_appraiser(parcel_id)
+                    already_added.append(parcel_id)
+                   
+
+                if case_number and case_number not in already_added:
+                    self.logger.info(f'         {case_number}')
+                    self.handle_court(case_number)
+                    already_added.append(case_number)
+
+                batched += 1
+                if batched % BATCH_SIZE == 0:
+                    self.session.commit()
+                    already_added = []
+            self.session.add(Scraped(date = single_date))
+        self.session.commit()
+
+    def insert(self, data: Model):
+        if not self.check_if_exists(data):
+            self.session.add(data)
+    
+    def get_start_date(self) -> datetime:
+
+        most_recent_date_scraped = self.session.query(func.max(Scraped.date)).scalar()
+        if not most_recent_date_scraped: 
+            start_date = datetime(2010,1,11)
+        else:
+            start_date = most_recent_date_scraped + timedelta(days = 1)
+        return start_date
+
+    def validate_parcel_id(self, parcel_id):
+        try:
+            convert_folio_to_int(parcel_id=parcel_id)
+            if fuzz.token_set_ratio(parcel_id, 'MULTIPLE PARCEL') > 75:
+                return None
+            else:
+                return parcel_id
+        except ValueError:
+            return None
+        
 def drop_all_tables():
     AppraiserLake.__table__.drop(bind = engine)
     CourtLake.__table__.drop(bind = engine)
