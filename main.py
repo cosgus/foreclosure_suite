@@ -1,4 +1,4 @@
-from requests.exceptions import ConnectionError
+from requests.exceptions import ConnectionError, ReadTimeout
 from time import sleep
 
 from foreclosure_suite.database.seed import DataSeed
@@ -14,7 +14,7 @@ def main():
     while True:
         try:
             seeder.seed_data()
-        except ConnectionError as e:
+        except (ConnectionError, ReadTimeout) as e:
             logger.warning(f'Connection Error - Restarting seeder\n {e}')
             sleep(30)
 
