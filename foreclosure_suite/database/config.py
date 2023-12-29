@@ -12,7 +12,6 @@ engine = create_engine(f"postgresql://{creds['user']}:{creds['password']}@localh
 
 session = scoped_session(
     sessionmaker(
-        autoflush = False,
         autocommit = False,
         bind = engine
     )
