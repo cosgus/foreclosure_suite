@@ -112,20 +112,20 @@ class DataSeed:
     def handle_auction(self, aid):
         aid_data = self.create_aid_data(aid)
         entry = AuctionLake(**aid_data)
-        if not AuctionLake.exists_in_table(self.session, id = aid):
+        if not AuctionLake.exists_in_table(self.session, ident = aid):
             self.session.add(entry)
         return entry
         
 
     def handle_appraiser(self, parcel_id):
         context_id = convert_folio_to_int(parcel_id)
-        if not AppraiserLake.exists_in_table(self.session, id = context_id):
+        if not AppraiserLake.exists_in_table(self.session, ident = context_id):
             appraiser_data = self.create_appraiser_data(parcel_id)
             entry = AppraiserLake(**appraiser_data)
             self.session.add(entry)
 
     def handle_court(self, case_number):
-        if not CourtLake.exists_in_table(self.session, case_number = case_number):
+        if not CourtLake.exists_in_table(self.session, ident = case_number):
             court_data = self.create_court_data(case_number)
             entry = CourtLake(**court_data)
             self.session.add(entry)

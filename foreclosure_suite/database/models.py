@@ -35,8 +35,8 @@ class ModelMixin(Model):
         return entry
 
     @classmethod
-    def exists_in_table(cls, session, **kwargs):
-        if session.query(cls).filter_by(**kwargs).first():
+    def exists_in_table(cls, session, ident):
+        if session.get(cls, ident):
             logger.debug(f'{cls} - Already Inserted')
             return True
 
