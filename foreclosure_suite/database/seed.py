@@ -6,7 +6,7 @@ from time import sleep
 from fuzzywuzzy import fuzz
 from sqlalchemy import func
 
-from foreclosure_suite.database.models import AppraiserLake, AuctionLake, CourtLake, AuctionDateLake, Model, MultipleParcelLake
+from foreclosure_suite.database.models import AppraiserLake, AuctionLake, CourtLake, AuctionDateLake, Model
 from foreclosure_suite.database.config import session, engine
 from foreclosure_suite.scrapers import ForeclosureScraper, AppraiserScraper, CourtScraper
 from foreclosure_suite.logger import get_logger
