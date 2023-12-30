@@ -10,9 +10,9 @@ def main():
     
     logger = get_logger(__name__)
     models.Model.metadata.create_all(bind = engine)
-    seeder = DataSeed()
     while True:
         try:
+            seeder = DataSeed()
             seeder.seed_data()
         except (ConnectionError, ReadTimeout) as e:
             logger.warning(f'Connection Error - Restarting seeder\n {e}')
