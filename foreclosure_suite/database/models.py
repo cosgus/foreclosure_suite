@@ -74,8 +74,7 @@ class AppraiserLake(DataLake):
 class CourtLake(DataLake):
     __tablename__ = "court_raw_data"
 
-    id = Column(Integer, primary_key = True, autoincrement = True)
-    case_number = Column(String, unique = True)
+    case_number = Column(String, primary_key = True)
     html = Column(String)
 
     def __repr__(self):
