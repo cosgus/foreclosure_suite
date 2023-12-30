@@ -6,20 +6,20 @@ from time import sleep
 from fuzzywuzzy import fuzz
 from sqlalchemy import func
 
-from foreclosure_suite.database.models import AppraiserLake, AuctionLake, CourtLake, AuctionDateLake, Table, Model
+from foreclosure_suite.database.models import AppraiserLake, AuctionLake, CourtLake, AuctionDateLake, Model, MultipleParcelLake
 from foreclosure_suite.database.config import session, engine
 from foreclosure_suite.scrapers import ForeclosureScraper, AppraiserScraper, CourtScraper
 from foreclosure_suite.logger import get_logger
 from foreclosure_suite.utils import daterange, convert_folio_to_int, load_config
 
 BATCH_SIZE = load_config()['batch_size']
+MULTIPLE_PARCEL = 'MULTIPLE PARCEL'
 
 class DataSeed:
 
     def __init__(self, alchemy_session = session):
 
         self.session = alchemy_session
-        self.tables = Table
         self.start_date = self.get_start_date()
 
         self.foreclosure_scraper = ForeclosureScraper()
@@ -73,11 +73,7 @@ class DataSeed:
 
     def validate_parcel_id(self, parcel_id):
         try:
-            convert_folio_to_int(parcel_id=parcel_id)
-            if fuzz.token_set_ratio(parcel_id, 'MULTIPLE PARCEL') > 75:
-                return None
-            else:
-                return parcel_id
+            return convert_folio_to_int(parcel_id)
         except ValueError:
             return None
         
@@ -160,6 +156,10 @@ class DataSeed:
     
     def handle_multiple_parcel(self):
         pass
+
+    def handle_no_parcel_id(self):
+        pass
+
 
 def drop_all_tables():
     # AppraiserLake.__table__.drop(bind = engine)

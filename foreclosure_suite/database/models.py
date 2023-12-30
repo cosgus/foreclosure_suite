@@ -85,6 +85,9 @@ class CourtLake(RequestsDataLake):
 
     def __repr__(self):
         return f'{self.__class__.__name__}, Case Number: {self.case_number}'
+    
 
 if __name__ == "__main__":
     Model.metadata.create_all(engine)
+
+
