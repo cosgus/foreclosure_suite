@@ -73,7 +73,8 @@ class DataSeed:
 
     def validate_parcel_id(self, parcel_id):
         try:
-            return convert_folio_to_int(parcel_id)
+            convert_folio_to_int(parcel_id)
+            return parcel_id
         except ValueError:
             return None
         
