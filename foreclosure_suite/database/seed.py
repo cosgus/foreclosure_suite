@@ -6,7 +6,7 @@ from time import sleep
 from fuzzywuzzy import fuzz
 from sqlalchemy import func
 
-from foreclosure_suite.database.models import AppraiserLake, AuctionLake, CourtLake, Scraped, Table, Model
+from foreclosure_suite.database.models import AppraiserLake, AuctionLake, CourtLake, AuctionDateLake, Table, Model
 from foreclosure_suite.database.config import session, engine
 from foreclosure_suite.scrapers import ForeclosureScraper, AppraiserScraper, CourtScraper
 from foreclosure_suite.logger import get_logger
@@ -31,10 +31,9 @@ class DataSeed:
     def seed_data(self):
 
         batched = 0
-        already_added = []
         
         for single_date in daterange(self.start_date, datetime.now()):
-            aids_list = self.foreclosure_scraper.get_days_aids(single_date)
+            aids_list = self.handle_date(single_date)
             self.logger.info(single_date)
             for aid in aids_list:
 
@@ -45,22 +44,17 @@ class DataSeed:
                 parcel_id = self.validate_parcel_id(auction_data['parcel_id'])
                 case_number = auction_data['case_number']
                 
-                if parcel_id and parcel_id not in already_added:
+                if parcel_id:
                     self.logger.info(f'         {parcel_id}')
                     self.handle_appraiser(parcel_id)
-                    already_added.append(parcel_id)
                    
-
-                if case_number and case_number not in already_added:
+                if case_number:
                     self.logger.info(f'         {case_number}')
                     self.handle_court(case_number)
-                    already_added.append(case_number)
 
                 batched += 1
                 if batched % BATCH_SIZE == 0:
                     self.session.commit()
-                    already_added = []
-            self.session.add(Scraped(date = single_date))
         self.session.commit()
 
     def insert(self, data: Model):
@@ -70,11 +64,11 @@ class DataSeed:
     
     def get_start_date(self) -> datetime:
 
-        most_recent_date_scraped = self.session.query(func.max(Scraped.date)).scalar()
+        most_recent_date_scraped = self.session.query(func.max(AuctionDateLake.date)).scalar()
         if not most_recent_date_scraped: 
             start_date = datetime(2010,1,11)
         else:
-            start_date = most_recent_date_scraped + timedelta(days = 1)
+            start_date = most_recent_date_scraped
         return start_date
 
     def validate_parcel_id(self, parcel_id):
@@ -87,27 +81,61 @@ class DataSeed:
         except ValueError:
             return None
         
+    def create_base_data(self, res):
+        return {
+            'status_code': res.status_code,
+            'response_headers': json.dumps(dict(res.headers))
+        }
+    
     def create_aid_data(self, aid):
-        aid_data = {
+        res = self.foreclosure_scraper.get_aid_url_response(aid)
+        aid_data = self.create_base_data(res)
+        aid_data.update({
             'id': int(aid),
             'xhr': json.dumps(self.foreclosure_scraper.get_aid_xhr_response(aid).json()),
-            'html': self.foreclosure_scraper.get_aid_url_response(aid).text
-        }
+            'html': res.text
+        })
         return aid_data
     
     def create_appraiser_data(self, parcel_id):
         self.appraiser_scraper.set_parcel_id(parcel_id)
-        appraiser_data = {
+        res = self.appraiser_scraper.get_appraisers()
+        appraiser_data = self.create_base_data(res)
+        appraiser_data.update({
             'id': convert_folio_to_int(parcel_id),
-            'json': json.dumps(self.appraiser_scraper.get_appraisers_json())
-        }
+            'json': json.dumps(res.json())
+        })
         return appraiser_data
     
+    
     def create_court_data(self, case_number):
-        return {
+        res = self.court_scraper.post_court(case_number=case_number, timeout = 30)
+        court_data = self.create_base_data(res)
+        court_data.update(
+            {
             'case_number': case_number,
-            'html': self.court_scraper.post_court(case_number=case_number, timeout = 30).text
-        }
+            'html': res.text,
+            }
+        )
+        return court_data
+    
+    def create_date_data(self, single_date):
+        res = self.foreclosure_scraper.get_days_response(single_date)
+        date_data = self.create_base_data(res)
+        date_data.update(
+            {
+                'date': single_date,
+                'html': res.text
+            }
+        )
+        return date_data
+    
+    def handle_date(self, single_date):
+        date_data = self.create_date_data(single_date)
+        entry = AuctionDateLake(**date_data)
+        if not AuctionDateLake.exists_in_table(self.session, ident = single_date):
+            self.session.add(entry)
+        return self.foreclosure_scraper.parser.extract_days_aids(entry.html)
     
     def handle_auction(self, aid):
         aid_data = self.create_aid_data(aid)
@@ -134,10 +162,10 @@ class DataSeed:
         pass
 
 def drop_all_tables():
-    AppraiserLake.__table__.drop(bind = engine)
+    # AppraiserLake.__table__.drop(bind = engine)
     CourtLake.__table__.drop(bind = engine)
     AuctionLake.__table__.drop(bind = engine)
-    Scraped.__table__.drop(bind = engine)
+    AuctionDateLake.__table__.drop(bind = engine)
 
 if __name__ == '__main__':
     drop_all_tables()

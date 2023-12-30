@@ -51,8 +51,7 @@ class RequestsDataLake(ModelMixin):
 class AuctionDateLake(RequestsDataLake):
     __tablename__ = 'auction_date_raw_data'
 
-    id = Column(Integer, primary_key = True)
-    date = Column(DateTime)
+    date = Column(DateTime, primary_key = True)
     html = Column(String)
 
     def __repr__(self):
