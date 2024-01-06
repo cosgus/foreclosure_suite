@@ -115,3 +115,14 @@ class CourtParser:
         soup = BeautifulSoup(html_content, 'html.parser')
         docket_count = soup.select('#ctl00_ContentPlaceHolder1_lblDocketCount')[0].text
         return docket_count
+    
+    def remove_large_tags(self, html_content:str) -> str:
+        soup = BeautifulSoup(html_content, 'html.parser')
+
+        logo_anchor = soup.find('a', {'id': 'ctl00_logoAnchor'})
+        logo_anchor.decompose()
+
+        footer_logo_anchor = soup.find('a', {'id': 'FooterLogoAnchor'})
+        footer_logo_anchor.decompose()
+
+        return str(soup)
