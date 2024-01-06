@@ -20,12 +20,11 @@ def reduce_size_court_lake_html():
 
         for idx, entry in enumerate(to_be_updated):
 
-            entry_idx = batch * batch_size + idx + 1
             entry.html = parser.remove_large_tags(entry.html)
-            logger.info(f'{entry.case_number} - {entry_idx}/{len(to_be_updated)}')
+            logger.info(f'{entry.case_number} - batch: {batch} - {idx + 1}/{len(to_be_updated)}')
+            session.commit()    
 
         batch += 1
-        session.commit()
         
 if __name__ == '__main__':
     
