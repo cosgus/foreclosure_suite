@@ -108,10 +108,11 @@ class DataSeed:
     def create_court_data(self, case_number):
         res = self.court_scraper.post_court(case_number=case_number, timeout = 30)
         court_data = self.create_base_data(res)
+        html_content = self.court_scraper.parser.remove_large_tags(res.text)
         court_data.update(
             {
             'case_number': case_number,
-            'html': res.text,
+            'html': html_content,
             }
         )
         return court_data
