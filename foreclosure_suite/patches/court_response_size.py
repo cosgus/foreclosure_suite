@@ -14,7 +14,7 @@ def reduce_size_court_lake_html():
     batch_size = 100
     batch = 0
 
-    to_be_updated = session.query(CourtLake).filter(CourtLake.updated_at == None).all()
+    to_be_updated = session.query(CourtLake).filter(CourtLake.updated_at == None).limit(100).all()
 
     while to_be_updated:
 
@@ -23,7 +23,7 @@ def reduce_size_court_lake_html():
             entry_idx = batch * batch_size + idx + 1
             entry.html = parser.remove_large_tags(entry.html)
             logger.info(f'{entry.case_number} - {entry_idx}/{len(to_be_updated)}')
-            
+
         batch += 1
         session.commit()
         
