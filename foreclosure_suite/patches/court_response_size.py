@@ -10,12 +10,21 @@ def reduce_size_court_lake_html():
 
     parser = CourtParser()
     logger = get_logger(__name__)
+
+    batch_size = 100
+    batch = 0
+
     to_be_updated = session.query(CourtLake).filter(CourtLake.updated_at == None).all()
 
-    for idx, entry in enumerate(to_be_updated):
+    while to_be_updated:
 
-        entry.html = parser.remove_large_tags(entry.html)
-        logger.info(f'{entry.case_number} - {idx + 1}/{len(to_be_updated)}')
+        for idx, entry in enumerate(to_be_updated):
+
+            entry_idx = batch * batch_size + idx + 1
+            entry.html = parser.remove_large_tags(entry.html)
+            logger.info(f'{entry.case_number} - {entry_idx}/{len(to_be_updated)}')
+            
+        batch += 1
         session.commit()
         
 if __name__ == '__main__':
