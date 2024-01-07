@@ -120,9 +120,12 @@ class CourtParser:
         soup = BeautifulSoup(html_content, 'html.parser')
 
         logo_anchor = soup.find('a', {'id': 'ctl00_logoAnchor'})
-        logo_anchor.decompose()
+        if logo_anchor: logo_anchor.decompose()
 
         footer_logo_anchor = soup.find('a', {'id': 'FooterLogoAnchor'})
-        footer_logo_anchor.decompose()
+        if footer_logo_anchor: footer_logo_anchor.decompose()
 
+        view_state = soup.find('input', {'id': '__VIEWSTATE'})
+        if view_state: view_state.decompose()
+        
         return str(soup)
